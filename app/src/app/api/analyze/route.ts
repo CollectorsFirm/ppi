@@ -27,7 +27,7 @@ type ReportCard = {
     auctionEnded: boolean;
   };
   greenFlags: string[];
-  redFlags: string[];
+  redFlags: Flag[];
   watchOuts: string[];
   fairMarketEstimate: string;
   verdict: string;

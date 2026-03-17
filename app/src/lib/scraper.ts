@@ -413,6 +413,15 @@ async function scrapeCraigslist(url: string): Promise<ListingData> {
     description,
     specs,
     images,
+    comments: [],
+    sellerUsername: null,
+    photoCountProxy: images.length,
+    modelPageUrl: null,
+    bidCount: null,
+    watcherCount: null,
+    daysRemaining: null,
+    endTimeText: null,
+    auctionEnded: false,
   };
 }
 
