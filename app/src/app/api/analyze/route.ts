@@ -71,8 +71,8 @@ Return ONLY JSON with this exact shape:
   "unansweredQuestions": string[]
 }
 Guidelines:
-- greenFlags: up to 5 strings. Only include genuine positives — do not pad. A great listing might have 5; a thin listing might have 1. Be specific — tie to actual listing details.
-- redFlags: up to 5 objects with "text" and "severity". Only include real concerns — do not pad to hit a number. A clean listing might have 1 or 2; a problematic one might have 4-5. Never manufacture flags to fill the list. Severity rules:
+- greenFlags: as many as genuinely exist. Only include real positives — do not pad. Be specific — tie to actual listing details.
+- redFlags: as many as genuinely exist. Only include real concerns — never manufacture flags. A clean listing might have 1; a problematic one might have 6. Severity rules:
   - "major" = potential dealbreaker (frame rust, salvage title, flood damage, engine failure, unknown title, serious structural issues)
   - "moderate" = significant concern worth negotiating or inspecting closely (undisclosed repaint, vague service history, high deferred maintenance, known model-specific failures)
   - "minor" = worth noting but not concerning (cosmetic wear, aftermarket parts, one-owner quirk, minor missing item)
