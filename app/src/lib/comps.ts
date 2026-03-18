@@ -129,6 +129,19 @@ export type HammerEstimate = {
   factors: string[];
 };
 
+// Known restomod/coachbuilt builders whose market is entirely separate from stock comps
+const RESTOMOD_BUILDERS = [
+  "singer", "gunther werks", "guntherwerks", "rwb", "rauh-welt",
+  "emory motorsports", "emory outlaw", "magnus walker", "urban outlaw",
+  "theon design", "dp motorsport", "backdraft", "tuthill",
+  "heritage motorsport", "450 motorsport", "canepa", "ruf",
+];
+
+export function isRestomomd(title: string, description: string): boolean {
+  const haystack = (title + " " + description).toLowerCase();
+  return RESTOMOD_BUILDERS.some(b => haystack.includes(b));
+}
+
 export function estimateHammerPrice(
   comps: MarketComps,
   scoreBreakdown: {
@@ -139,8 +152,20 @@ export function estimateHammerPrice(
     communityReception: { score: number; max: number };
   },
   listingTitle: string,
-  listingSpecs: string[]
+  listingSpecs: string[],
+  listingDescription?: string
 ): HammerEstimate {
+  // ── Restomod/coachbuilt: stock comps are meaningless ──
+  if (isRestomomd(listingTitle, listingDescription ?? "")) {
+    return {
+      estimate: comps.median,
+      low: comps.median,
+      high: comps.median,
+      confidence: "low",
+      factors: ["Restomod/coachbuilt build detected — standard model comps do not apply. Value is build-specific and highly variable."],
+    };
+  }
+
   let base = comps.median;
   const factors: string[] = [];
   let multiplier = 1.0;

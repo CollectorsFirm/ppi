@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import Anthropic from "@anthropic-ai/sdk";
 import { scrapeListing } from "../../../lib/scraper";
 import { scoreListing, scoreToLabel, type ScoreBreakdown } from "../../../lib/scorer";
-import { buildModelPageUrl, fetchMarketComps, formatCompsEstimate, estimateHammerPrice, type MarketComps, type HammerEstimate } from "../../../lib/comps";
+import { buildModelPageUrl, fetchMarketComps, formatCompsEstimate, estimateHammerPrice, isRestomomd, type MarketComps, type HammerEstimate } from "../../../lib/comps";
 import { fetchSellerProfile, type SellerProfile } from "../../../lib/seller";
 import { getModelKnowledge, type ModelKnowledge } from "../../../lib/modelKnowledge";
 
@@ -83,7 +83,7 @@ Guidelines:
 - PPF/CERAMIC: The absence of paint protection film (PPF) or ceramic coating is NEVER a red flag.
 - RESTOMOD/COACHBUILT: For professionally built cars (Singer, RWB, Magnus Walker, Emory, Safari builds, etc.) — do NOT flag the absence of pre-build chassis history, dyno sheets, or original factory records. The builder's reputation and completed work is the provenance. Judge the quality of the build and documentation as-presented, not what existed before the build.
 - PPI: Never flag the absence of a pre-purchase inspection report as a red flag. PPI is the buyer's responsibility, not the seller's obligation. Most cars don't have it. Only flag it if the seller claims it has PPF/ceramic and that claim appears false or unverifiable.
-- fairMarketEstimate: price range like "$42k–$48k" based on comparable BaT results for this model/spec/era.
+- fairMarketEstimate: price range like "$42k–$48k" based on comparable BaT results for this model/spec/era. EXCEPTION: if this is a restomod/coachbuilt car (Singer, Gunther Werks, RWB, Emory, etc.), return exactly: "Not applicable — restomod build. Value is builder/spec-specific."
 - verdict: one punchy sentence that matches the ${label} rating.
 - audienceScore: always return 3 (the structured algorithm calculates this — your value is ignored).
 - audienceSentiment: one sentence summarizing overall comment tone based on what people are actually saying. "No comments yet." if none. "Comments unavailable for this listing." if comments array contains only "[Comments could not be loaded for this listing]".
@@ -190,8 +190,10 @@ export async function POST(request: Request) {
     : communityPts <= 11 ? 4
     : 5;
 
+  const isRestomodListing = isRestomomd(listing.title, listing.description);
+
   const hammerEstimate = comps
-    ? estimateHammerPrice(comps, finalBreakdown, listing.title, listing.specs)
+    ? estimateHammerPrice(comps, finalBreakdown, listing.title, listing.specs, listing.description)
     : null;
 
   const report: ReportCard = {
@@ -210,7 +212,9 @@ export async function POST(request: Request) {
       auctionEnded: listing.auctionEnded,
     },
     ...aiAnalysis,
-    fairMarketEstimate: comps ? formatCompsEstimate(comps) : aiAnalysis.fairMarketEstimate,
+    fairMarketEstimate: isRestomodListing
+      ? "Not applicable — restomod/coachbuilt build. Value is highly specific to the builder and spec; standard model comps do not apply."
+      : comps ? formatCompsEstimate(comps) : aiAnalysis.fairMarketEstimate,
     audienceScore: derivedAudienceScore,
   };
 
