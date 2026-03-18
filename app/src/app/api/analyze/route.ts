@@ -82,11 +82,19 @@ Guidelines:
 - ERA CONTEXT: Adjust expectations by era. 1960s-1990s vehicles: rust, carbs, mechanical wear are normal considerations — don't flag routine maintenance items as red flags. Judge the car against its peers, not a modern standard.
 - PPF/CERAMIC: The absence of paint protection film (PPF) or ceramic coating is NEVER a red flag.
 - PHOTO COUNT: The photo count provided is a MINIMUM — BaT lazy-loads its gallery and only a subset of images appear in the initial HTML. Never flag or comment on photo count being low. Assume the full gallery exists on the listing page.
-- RESTOMOD/COACHBUILT: For professionally built cars (Singer, RWB, Magnus Walker, Emory, Safari builds, etc.) — do NOT flag the absence of pre-build chassis history, dyno sheets, performance verification, or original factory records. The builder's reputation and completed work is the provenance. Judge the quality of the build and documentation as-presented, not what existed before the build.
-- PPI: Never flag the absence of a pre-purchase inspection report as a red flag. PPI is the buyer's responsibility, not the seller's obligation.
-- DYNO/PERFORMANCE SPECS: Never flag the absence of dyno sheets or unverified horsepower claims as a red flag. Performance output is not something sellers are expected to document.
-- DEALER CONSIGNMENT: Never flag dealer consignment or the absence of direct owner commentary as a red flag. Consignment is a normal and legitimate sale method. It tells you nothing negative about the car.
-- LOW MILEAGE ON COLLECTIBLES: Very low mileage on a collector car, restomod, or high-value build is NORMAL and expected — these cars are often garage queens by design. Do NOT speculate about why the owner is selling or imply something is wrong. If mileage is extremely low (under ~1,000 miles), the appropriate watchOut is to verify the car has been properly serviced/fluids fresh despite low use — not to question the seller's motives.
+- RESTOMOD/COACHBUILT: For professionally built cars (Singer, RWB, Magnus Walker, Emory, Safari builds, etc.) — the builder's completed work IS the provenance. Judge the build as-presented. Do not reference anything that existed before the build.
+- LOW MILEAGE ON COLLECTIBLES: Very low mileage on a collector car or restomod is NORMAL. Do NOT speculate about why the owner is selling or question their motives. If under ~1,000 miles, a watchOut about verifying fluids/service is appropriate — nothing else.
+
+ABSOLUTE NEVER LIST — these topics must NEVER appear anywhere in redFlags or watchOuts, in any phrasing:
+✗ Dyno sheets, horsepower verification, power output, engine tuning documentation
+✗ Dealer consignment, absence of owner commentary, how the car was driven/stored by a previous owner
+✗ Pre-purchase inspection (PPI) reports
+✗ Pre-build chassis history, original engine/transmission before a restomod
+✗ Import restrictions, 25-year rule, DOT/EPA compliance, homologation, tariffs
+✗ Photo count being low or limited
+✗ Why the owner might be selling
+
+Before finalizing your response, check every redFlag and watchOut against this list. If any item touches one of these topics — even indirectly or with different wording — remove it and replace it with something genuinely relevant to the car's condition or documentation.
 - fairMarketEstimate: price range like "$42k–$48k" based on comparable BaT results for this model/spec/era. EXCEPTION: if this is a restomod/coachbuilt car (Singer, Gunther Werks, RWB, Emory, etc.), return exactly: "Not applicable — restomod build. Value is builder/spec-specific."
 - verdict: one punchy sentence that matches the ${label} rating.
 - audienceScore: always return 3 (the structured algorithm calculates this — your value is ignored).
