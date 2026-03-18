@@ -216,7 +216,7 @@ export function scoreListing(listing: ListingData, audienceScore: number): Score
 
   // Aftermarket ECU tune — legitimate concern on any high-value car
   if (contains(fullText, ["ecu tune", "ecu remap", "aftermarket tune", "aftermarket ecu", "engine tune", "remapped", "chipped", "performance tune"])) {
-    condScore -= 4; condSignals.push("⚠️ Aftermarket ECU tune — warranty, reliability, and resale implications");
+    condScore -= 2; condSignals.push("⚠️ Aftermarket ECU tune — warranty, reliability, and resale implications");
   }
 
   // Accident/damage history
