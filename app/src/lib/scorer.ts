@@ -44,11 +44,12 @@ export function scoreListing(listing: ListingData, audienceScore: number): Score
     docScore += 5; docSignals.push("Original documentation present");
   }
 
-  // Title status
-  if (contains(fullText, [
+  // Title status — handle "clean Florida title", "clean California title", etc.
+  const hasClearTitle = contains(fullText, [
     "clean title", "clear title", "lien-free", "lien free",
     "free and clear", "title in hand", "clean and clear",
-  ])) {
+  ]) || /clean\s+\w+\s+title/.test(fullText); // "clean Florida title", "clean Texas title", etc.
+  if (hasClearTitle) {
     docScore += 6; docSignals.push("Clean title confirmed");
   }
 
@@ -162,11 +163,20 @@ export function scoreListing(listing: ListingData, audienceScore: number): Score
       /(\d{1,3}(?:,\d{3})*)\s*(?:original\s+)?miles?\b/i,
       /(\d{1,3}(?:,\d{3})*)-mile\b/i,
       /odometer[^0-9]*(\d{1,3}(?:,\d{3})*)/i,
+      // Handle shorthand: "18k-mile", "18k miles", "18K miles"
+      /(\d+(?:\.\d+)?)[kK]-?miles?\b/i,
+      /(\d+(?:\.\d+)?)[kK]\s+miles?\b/i,
     ];
     for (const pattern of mileagePatterns) {
       const m = fullText.match(pattern);
       if (m) {
-        const val = parseInt(m[1].replace(/,/g, ""));
+        let val: number;
+        // k-suffix patterns — multiply by 1000
+        if (pattern.source.includes('[kK]')) {
+          val = Math.round(parseFloat(m[1]) * 1000);
+        } else {
+          val = parseInt(m[1].replace(/,/g, ""));
+        }
         if (val > 100 && val < 999999) { mileage = val; break; }
       }
     }
@@ -219,8 +229,10 @@ export function scoreListing(listing: ListingData, audienceScore: number): Score
     condScore -= 2; condSignals.push("⚠️ Aftermarket ECU tune — warranty, reliability, and resale implications");
   }
 
-  // Accident/damage history
-  if (contains(fullText, ["accident", "collision", "flood", "fire damage", "salvage"])) {
+  // Accident/damage history — check for positive mentions only (not "free of accidents", "no accidents", etc.)
+  const hasAccident = /(accident|collision|flood damage|fire damage|\bsalvage\b)/.test(fullText) &&
+    !/(free of accidents?|no accidents?|accident.free|no collision|no flood|clean carfax|carfax.*free|free.*carfax)/.test(fullText);
+  if (hasAccident) {
     condScore -= 7; condSignals.push("⚠️ Accident or damage history mentioned");
   }
 
