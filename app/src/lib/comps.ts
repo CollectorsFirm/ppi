@@ -131,10 +131,25 @@ export type HammerEstimate = {
 
 // Known restomod/coachbuilt builders whose market is entirely separate from stock comps
 const RESTOMOD_BUILDERS = [
+  // Porsche
   "singer", "gunther werks", "guntherwerks", "rwb", "rauh-welt",
   "emory motorsports", "emory outlaw", "magnus walker", "urban outlaw",
-  "theon design", "dp motorsport", "backdraft", "tuthill",
-  "heritage motorsport", "450 motorsport", "canepa", "ruf",
+  "theon design", "dp motorsport", "tuthill", "heritage motorsport",
+  "450 motorsport", "canepa", "ruf", "bisimoto", "rothmans werks",
+  "kaege retro", "paul stephens", "adventus", "9ff",
+  // Ferrari / Italian
+  "pogea racing", "ares design", "touring superleggera", "mansory",
+  // Japanese
+  "rocket bunny", "pandem", "liberty walk", "lb★works", "lb works",
+  "tra kyoto",
+  // American
+  "icon 4x4", "kindig-it", "ringbrothers", "chip foose",
+  "roadster shop", "speedkore", "salvaggio design", "galpin motors",
+  // Resto-EV / Electrified
+  "charge cars", "lunaz", "everrati", "zero labs",
+  // Other coachbuilders
+  "alfaholics", "totem automobili", "rml group", "kimera automobili",
+  "redux", "backdraft",
 ];
 
 export function isRestomomd(title: string, description: string): boolean {
