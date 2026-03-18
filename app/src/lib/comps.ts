@@ -198,7 +198,6 @@ const VARIANT_PREMIUMS: Array<{ keywords: string[]; pct: number; label: string }
   { keywords: ["pista"],        pct: 0.20, label: "Ferrari Pista (+20%)" },
   { keywords: ["speciale"],     pct: 0.20, label: "Ferrari Speciale (+20%)" },
   { keywords: ["club racer", "cr "],  pct: 0.20, label: "S2000 CR (+20%)" },
-  { keywords: ["s"],            pct: 0.08, label: "S-variant (+8%)" }, // 911S, 550A, etc.
 ];
 
 export function estimateHammerPrice(
