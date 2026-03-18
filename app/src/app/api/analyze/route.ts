@@ -265,7 +265,7 @@ export async function POST(request: Request) {
   const isRestomodListing = isRestomomd(listing.title, listing.description);
 
   const hammerEstimate = comps
-    ? estimateHammerPrice(comps, finalBreakdown, listing.title, listing.specs, listing.description)
+    ? estimateHammerPrice(comps, finalBreakdown, listing.title, listing.specs, listing.description, specialPrograms)
     : null;
 
   const report: ReportCard = {

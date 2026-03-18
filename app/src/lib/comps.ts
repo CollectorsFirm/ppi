@@ -157,6 +157,50 @@ export function isRestomomd(title: string, description: string): boolean {
   return RESTOMOD_BUILDERS.some(b => haystack.includes(b));
 }
 
+// Special program premium multipliers — applied on top of base comp median
+const SPECIAL_PROGRAM_PREMIUMS: Record<string, { pct: number; label: string }> = {
+  // Ferrari
+  "Ferrari Tailor Made":          { pct: 0.25, label: "Tailor Made (+25% — fully bespoke factory spec)" },
+  "Ferrari Atelier":              { pct: 0.40, label: "Ferrari Atelier one-off (+40%)" },
+  "Ferrari Classiche Certified":  { pct: 0.12, label: "Classiche Certified (+12% — factory-authenticated provenance)" },
+  "Ferrari PTS (Paint-to-Sample)":{ pct: 0.12, label: "Ferrari PTS (+12% — rare factory color)" },
+  "Ferrari Fiorano Package":      { pct: 0.06, label: "Fiorano Package (+6%)" },
+  "Ferrari XX Program":           { pct: 0.00, label: "XX Program — comps not applicable" },
+  // Porsche
+  "Porsche PTS (Paint-to-Sample)":           { pct: 0.18, label: "Porsche PTS (+18% — rare factory color)" },
+  "Porsche Exclusive Manufaktur":            { pct: 0.10, label: "Exclusive Manufaktur (+10%)" },
+  "Porsche Weissach Package":                { pct: 0.20, label: "Weissach Package (+20%)" },
+  "Porsche GT Silver Program / Special Wishes": { pct: 0.08, label: "GT Special Wishes (+8%)" },
+  "Porsche Certificate of Authenticity (CoA)":  { pct: 0.04, label: "CoA documented (+4%)" },
+  // BMW
+  "BMW Individual":               { pct: 0.08, label: "BMW Individual (+8%)" },
+  "BMW M Performance / CSL":      { pct: 0.15, label: "M CSL/CS (+15% — limited production)" },
+  // McLaren
+  "McLaren MSO (McLaren Special Operations)": { pct: 0.12, label: "MSO (+12%)" },
+  // Lamborghini
+  "Lamborghini Ad Personam":      { pct: 0.08, label: "Ad Personam (+8%)" },
+  // Bentley
+  "Bentley Mulliner":             { pct: 0.15, label: "Mulliner (+15%)" },
+  // Mercedes
+  "Mercedes-AMG Manufaktur":      { pct: 0.08, label: "AMG Manufaktur (+8%)" },
+  // Honda
+  "Honda S2000 CR (Club Racer)":  { pct: 0.20, label: "S2000 CR (+20%)" },
+  "Honda NSX Type R / NSX-R":     { pct: 1.50, label: "NSX-R (+150% — 2–3× standard NSX value)" },
+};
+
+// Variant-specific premiums — when title/description indicates a rarer sub-model
+const VARIANT_PREMIUMS: Array<{ keywords: string[]; pct: number; label: string }> = [
+  { keywords: ["gts", "spider", "convertible", "cabriolet", "roadster", "targa"], pct: 0.15, label: "Open-top variant (+15% — GTS/Spider/Targa premium)" },
+  { keywords: ["gt3 rs"],       pct: 0.30, label: "GT3 RS (+30% over base GT3)" },
+  { keywords: ["gt2 rs"],       pct: 0.50, label: "GT2 RS (+50% over base GT2)" },
+  { keywords: ["challenge stradale", "cs"], pct: 0.40, label: "Challenge Stradale (+40%)" },
+  { keywords: ["scuderia"],     pct: 0.25, label: "Ferrari Scuderia (+25%)" },
+  { keywords: ["pista"],        pct: 0.20, label: "Ferrari Pista (+20%)" },
+  { keywords: ["speciale"],     pct: 0.20, label: "Ferrari Speciale (+20%)" },
+  { keywords: ["club racer", "cr "],  pct: 0.20, label: "S2000 CR (+20%)" },
+  { keywords: ["s"],            pct: 0.08, label: "S-variant (+8%)" }, // 911S, 550A, etc.
+];
+
 export function estimateHammerPrice(
   comps: MarketComps,
   scoreBreakdown: {
@@ -168,7 +212,8 @@ export function estimateHammerPrice(
   },
   listingTitle: string,
   listingSpecs: string[],
-  listingDescription?: string
+  listingDescription?: string,
+  specialPrograms?: Array<{ name: string }>
 ): HammerEstimate {
   // ── Restomod/coachbuilt: stock comps are meaningless ──
   if (isRestomomd(listingTitle, listingDescription ?? "")) {
@@ -184,6 +229,33 @@ export function estimateHammerPrice(
   let base = comps.median;
   const factors: string[] = [];
   let multiplier = 1.0;
+
+  // ── Special factory programs — applied first as foundational premium ──
+  if (specialPrograms && specialPrograms.length > 0) {
+    for (const program of specialPrograms) {
+      const premium = SPECIAL_PROGRAM_PREMIUMS[program.name];
+      if (premium && premium.pct > 0) {
+        multiplier += premium.pct;
+        factors.push(premium.label);
+      }
+    }
+  }
+
+  // ── Variant premium — GTS, Spider, RS, CS, etc. command more than base model comps ──
+  const haystack = (listingTitle + " " + (listingDescription ?? "")).toLowerCase();
+  for (const variant of VARIANT_PREMIUMS) {
+    if (variant.keywords.some(kw => haystack.includes(kw))) {
+      // Skip if already covered by a special program with higher premium
+      const alreadyCovered = specialPrograms?.some(p =>
+        SPECIAL_PROGRAM_PREMIUMS[p.name]?.pct >= variant.pct
+      );
+      if (!alreadyCovered) {
+        multiplier += variant.pct;
+        factors.push(variant.label);
+        break; // only apply the first matching variant
+      }
+    }
+  }
 
   // ── No Reserve: historically drives bids 8-12% higher on BaT ──
   const isNoReserve = listingSpecs.some(s => s.toLowerCase().includes("no reserve")) ||
