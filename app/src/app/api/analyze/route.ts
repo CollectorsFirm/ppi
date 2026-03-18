@@ -153,13 +153,11 @@ const BANNED_FLAG_PATTERNS = [
   /quick(ly)? (resell|flip|list|sell)/i,
   /no (customer|retail) retention/i,
   /raises questions about why/i,
-  /acquired.*by.*dealer.*(recently|2026|no|without)/i,
-  /dealer.*(acquired|purchased|bought).*(recently|2026|no service|no documentation)/i,
-  /no documentation of ownership/i,
-  /no.*service.*between \d{4} and/i,
-  /smog (certification|test|check).*(not|no|missing|absent|unavailable)/i,
-  /emissions (test|certification|check).*(not|no|missing|past|absent)/i,
-  /last (emissions|smog|registered|tested).*(ago|since|back|2006|2005|2004|2003|2002|2001|2000|199)/i,
+  /acquired.*by.*selling dealer.*(recently|2026|no|without)/i,
+  /dealer.*(acquired|purchased|bought).*(recently|2026).*(no service|no documentation|no history)/i,
+  /smog (certification|test|check) (not|no longer|expired|lapsed|unavailable)/i,
+  /emissions (test|certification) (not|no longer|expired|lapsed|unavailable)/i,
+  /last (smog|emissions test) (was |passed )?(in )?\d{4} —/i,
 ];
 
 function filterFlags(flags: Flag[]): Flag[] {
