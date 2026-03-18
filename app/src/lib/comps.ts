@@ -222,7 +222,7 @@ const VARIANT_PREMIUMS: Array<{ keywords: string[]; brands: string[]; pct: numbe
   // Carrera RS 2.7: +80% over base (Grant: HIGH)
   { keywords: ["rs 2.7", "rs2.7"], brands: ["porsche"], pct: 0.80, label: "Carrera RS 2.7 (+80% — most collectible 911s)" },
   // Carrera RS (generic, covers 964 RS +80%, 993 RS +100% — use 80% as floor)
-  { keywords: ["carrera rs"],      brands: ["porsche"], pct: 0.80, label: "Carrera RS (+80%)" },
+  { keywords: ["carrera rs"],      brands: ["porsche"], pct: 0.80, label: "Carrera RS (+80% — generation-specific keywords above take priority)" },
 
   // ── FERRARI variants ──────────────────────────────────────────────────────
   // GTS / Spider: +12-15% over coupe
@@ -343,6 +343,28 @@ const VARIANT_PREMIUMS: Array<{ keywords: string[]; brands: string[]; pct: numbe
   { keywords: ["g50", "g50 gearbox", "g50 transmission"],                                brands: ["porsche"], pct:  0.12, label: "3.2 Carrera G50 gearbox (+12% — 1987-89, smoother shifts)" },
   { keywords: ["club sport", "clubsport", "m637"],                                       brands: ["porsche"], pct:  0.90, label: "3.2 Carrera Club Sport (+90% — M637 option, ~340 built)" },
   { keywords: ["turbo look", "turbo-look"],                                              brands: ["porsche"], pct:  0.25, label: "Turbo Look (+25% — wide body factory option)" },
+  // G-body SC/3.2 body variants
+  { keywords: ["sc targa", "911sc targa", "911 sc targa"],                               brands: ["porsche"], pct: -0.05, label: "911 SC Targa (−5% vs coupe — structural compromise, enthusiasts prefer coupe)" },
+  { keywords: ["sc cabriolet", "911sc cabriolet", "sc cab", "1983 cabriolet", "first cabriolet"], brands: ["porsche"], pct: -0.08, label: "911 SC Cabriolet (−8% vs coupe — first-ever 911 cab, 1983 only, ~4,200 built)" },
+  { keywords: ["3.2 cabriolet", "carrera cabriolet", "carrera 3.2 cabriolet"],           brands: ["porsche"], pct: -0.08, label: "3.2 Carrera Cabriolet (−8% vs coupe — G-body cabs consistently discount vs coupes)" },
+  { keywords: ["weissach edition", "sc weissach"],                                        brands: ["porsche"], pct:  0.12, label: "911 SC Weissach Edition (+12% — factory option, 436 US units, 1980 only)" },
+  { keywords: ["america roadster", "sc america roadster", "911sc roadster"],              brands: ["porsche"], pct:  0.90, label: "911 SC America Roadster (+90% — ~16 pre-production units, extreme rarity, flag for manual appraisal)" },
+  // 3.2 Speedster — two tiers
+  { keywords: ["speedster turbo look", "wide body speedster", "speedster widebody"],      brands: ["porsche"], pct:  2.40, label: "3.2 Speedster Wide Body (+240% vs 3.2 coupe — 823 built, Turbo Look body on Speedster)" },
+  { keywords: ["3.2 speedster", "carrera speedster", "911 speedster 1988", "911 speedster 1989"], brands: ["porsche"], pct: 1.80, label: "3.2 Carrera Speedster (+180% vs 3.2 coupe — 2,103 total built, $170-350k+ range)" },
+
+  // ── PORSCHE 964 (1989–1994) — Baseline: C2 coupe ~$85k ────────────────────
+  { keywords: ["964 c4", "964 carrera 4", "c4 coupe"],                                   brands: ["porsche"], pct: -0.15, label: "964 Carrera 4 (−15% vs C2 — AWD is a liability to collectors, heavier, more complex)" },
+  { keywords: ["carrera 4 lightweight", "964 lightweight", "c4 lightweight"],             brands: ["porsche"], pct:  6.00, label: "964 Carrera 4 Lightweight (+600% — ~22 built, Classic.com $1.05M — flag for specialist appraisal)" },
+  { keywords: ["rs america", "carrera rs america", "964 rs america", "911 rs america"],   brands: ["porsche"], pct:  0.75, label: "964 RS America (+75% — 701 built, US-only lightweight, $100-200k+ range)" },
+  { keywords: ["964 carrera rs", "964 rs", "rs 3.6"],                                    brands: ["porsche"], pct:  1.80, label: "964 Carrera RS (+180% vs C2 — European spec, 260hp lightweight, avg ~$238k)" },
+  { keywords: ["964 speedster", "911 speedster 1993", "911 speedster 1994", "speedster 3.6"], brands: ["porsche"], pct: 1.15, label: "964 Speedster (+115% vs C2 — 936 built, $170-220k typical clean range)" },
+  { keywords: ["964 america roadster", "911 america roadster 3.6"],                       brands: ["porsche"], pct:  0.43, label: "964 America Roadster (+43% — 102 built, NA-only Turbo Look cab, avg ~$121k)" },
+  { keywords: ["964 turbo 3.6", "turbo 3.6", "3.6 turbo"],                               brands: ["porsche"], pct:  3.62, label: "964 Turbo 3.6 (+362% vs C2 — 360hp, Classic.com avg $392k, the collector-preferred 964 Turbo)" },
+  { keywords: ["964 turbo 3.3", "turbo 3.3", "3.3 turbo"],                               brands: ["porsche"], pct:  1.42, label: "964 Turbo 3.3 (+142% vs C2 — 930-derived engine, 320hp, Classic.com avg $206k)" },
+  { keywords: ["964 turbo s", "turbo s 964"],                                             brands: ["porsche"], pct:  5.50, label: "964 Turbo S (+550% vs C2 — ~85 built, 381hp, consistently $500k+ at auction)" },
+  { keywords: ["964 targa"],                                                               brands: ["porsche"], pct: -0.05, label: "964 Targa (−5% vs coupe — consistent with air-cooled Targa discount)" },
+  { keywords: ["964 cabriolet", "964 cab"],                                               brands: ["porsche"], pct: -0.08, label: "964 Cabriolet (−8% vs coupe — open-top discount holds on air-cooled cars)" },
 
   // ── PORSCHE 914 variants (Grant research, 2026-03-17) ─────────────────────
   { keywords: ["914/6", "914-6"],            brands: ["porsche"], pct: 0.80, label: "914/6 (+80% vs 914/4 — 3,300 built, flat-six)" },
@@ -624,7 +646,34 @@ export function estimateHammerPrice(
     factors.push("190E Cosworth (+40% vs base 190E)");
   }
 
-  // ── Early 911 Sportomatic transmission penalty (Grant: HIGH confidence) ──
+  // ── G-body 2.7 era year logic (1974-1977 discount vs SC baseline) ──
+  // Only apply to non-Carrera 2.7 G-body cars (Carrera 2.7 already caught by keyword)
+  if (/\b911\b/i.test(listingTitle) && !/carrera|turbo|930/i.test(listingTitle)) {
+    const gbYearMatch = listingTitle.match(/\b(197[4-7])\b/);
+    if (gbYearMatch) {
+      const gbY = parseInt(gbYearMatch[1]);
+      const gbDiscount = gbY === 1974 ? -0.12 : gbY === 1975 ? -0.10 : gbY === 1976 ? -0.10 : -0.08;
+      multiplier += gbDiscount;
+      factors.push(`${gbY} 911 2.7 G-body (${gbDiscount*100}% — impact-bumper era, reliability concerns vs SC)`);
+    }
+  }
+
+  // ── 964 Turbo year logic (3.3 vs 3.6 split) ──
+  if (/\b964\b|911.*turbo/i.test(listingTitle) && /turbo/i.test(listingTitle)) {
+    const t964Year = listingTitle.match(/\b(199[1-4])\b/);
+    if (t964Year && !/3\.6|3\.3/i.test(haystack)) {
+      const ty = parseInt(t964Year[1]);
+      if (ty === 1991 || ty === 1992) {
+        multiplier += 1.42;
+        factors.push(`${ty} 964 Turbo 3.3 (+142% — 930-derived engine, 320hp)`);
+      } else if (ty === 1993 || ty === 1994) {
+        multiplier += 3.62;
+        factors.push(`${ty} 964 Turbo 3.6 (+362% — new 3.6L engine, 360hp, most desirable 964 Turbo)`);
+      }
+    }
+  }
+
+  // ── Early 911 Sportomatic transmission penalty ──
   if (/\b911\b/i.test(listingTitle) && /sportomatic/i.test(haystack)) {
     multiplier -= 0.25;
     factors.push("Sportomatic transmission (−25% — major collector discount)");
