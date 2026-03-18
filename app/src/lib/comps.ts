@@ -191,50 +191,96 @@ const SPECIAL_PROGRAM_PREMIUMS: Record<string, { pct: number; label: string }> =
 // Variant-specific premiums — when title/description indicates a rarer sub-model
 // brands: array of strings that must appear in the listing (any one match is sufficient)
 // Empty brands array = applies to any make
+// Source: Grant — Director of Market Intelligence, Collectors Firm (2026-03-17)
+// Based on Hagerty valuations, BaT auction data, and market consensus
 const VARIANT_PREMIUMS: Array<{ keywords: string[]; brands: string[]; pct: number; label: string }> = [
-  // Open-top variants — GTS/Spider/Targa command a premium on most makes
+  // ── PORSCHE body style adjustments ───────────────────────────────────────
+  // Targa: sliding roof mechanism, structural compromise vs coupe (Grant: -5%, HIGH confidence)
   {
-    keywords: ["gts", "spider", "spyder", "targa"],
-    brands: ["ferrari", "porsche", "lamborghini", "mclaren", "aston martin", "bmw", "mercedes", "audi", "jaguar", "bentley"],
-    pct: 0.15,
-    label: "Open-top variant (+15% — GTS/Spider/Targa premium)",
+    keywords: ["targa"],
+    brands: ["porsche"],
+    pct: -0.05,
+    label: "Targa (−5% vs coupe — roof mechanism and structural compromise)",
   },
-  // Cabriolet on Porsche 911 is a value detractor vs coupe — heavier, softer, less desirable
+  // Cabriolet: heavier, softer, less desirable to enthusiasts
+  // Air-cooled (964/993): -10% | Water-cooled (996+): -5% (Grant: HIGH confidence)
   {
     keywords: ["cabriolet", "convertible"],
     brands: ["porsche"],
-    pct: -0.10,
-    label: "Cabriolet/Convertible (−10% vs coupe — less desirable to Porsche enthusiasts)",
+    pct: -0.05,
+    label: "Cabriolet (−5% vs coupe — less desirable to Porsche enthusiasts)",
   },
-  // Cabriolet/convertible on other brands — neutral to slight premium depending on model; skip for now
 
-  // Porsche GT variants
-  { keywords: ["gt3 rs"],       brands: ["porsche"], pct: 0.30, label: "GT3 RS (+30% over base GT3)" },
-  { keywords: ["gt2 rs"],       brands: ["porsche"], pct: 0.50, label: "GT2 RS (+50% over base GT2)" },
-  { keywords: ["gt3"],          brands: ["porsche"], pct: 0.18, label: "GT3 (+18% over base Carrera)" },
-  { keywords: ["gt4"],          brands: ["porsche"], pct: 0.12, label: "GT4 (+12% over base Cayman)" },
-  { keywords: ["rs 2.7", "rs2.7"], brands: ["porsche"], pct: 0.80, label: "Carrera RS 2.7 (+80% — one of the most collectible 911s ever)" },
-  { keywords: ["carrera rs"],      brands: ["porsche"], pct: 0.60, label: "Carrera RS (+60%)" },
-  // Ferrari variants
-  { keywords: ["challenge stradale"], brands: ["ferrari"], pct: 0.40, label: "Challenge Stradale (+40%)" },
-  { keywords: ["scuderia"],           brands: ["ferrari"], pct: 0.25, label: "Ferrari Scuderia (+25%)" },
-  { keywords: ["pista"],              brands: ["ferrari"], pct: 0.20, label: "Ferrari Pista (+20%)" },
-  { keywords: ["speciale"],           brands: ["ferrari"], pct: 0.20, label: "Ferrari Speciale (+20%)" },
-  { keywords: ["aperta"],             brands: ["ferrari"], pct: 0.35, label: "Ferrari Aperta (+35% — open-top LaFerrari)" },
-  // Lamborghini variants
-  { keywords: ["sv", "superveloce"],  brands: ["lamborghini"], pct: 0.30, label: "Superveloce (+30%)" },
-  { keywords: ["sto"],                brands: ["lamborghini"], pct: 0.20, label: "Huracán STO (+20%)" },
-  { keywords: ["performante"],        brands: ["lamborghini"], pct: 0.15, label: "Performante (+15%)" },
-  // BMW variants
-  { keywords: ["m3 csl", "m4 csl"],  brands: ["bmw"], pct: 0.40, label: "CSL (+40% — homologation special)" },
-  { keywords: ["1m"],                 brands: ["bmw"], pct: 0.30, label: "1M (+30%)" },
-  { keywords: ["m2 cs"],              brands: ["bmw"], pct: 0.20, label: "M2 CS (+20%)" },
-  // Mercedes variants
-  { keywords: ["black series"],       brands: ["mercedes"], pct: 0.40, label: "Black Series (+40%)" },
-  { keywords: ["gtr", "gt r"],        brands: ["mercedes"], pct: 0.25, label: "AMG GT R (+25%)" },
-  // Honda variants
-  { keywords: ["club racer", "s2000 cr"], brands: ["honda"], pct: 0.20, label: "S2000 CR (+20%)" },
-  { keywords: ["type r"],             brands: ["honda", "acura"], pct: 0.20, label: "Type R (+20%)" },
+  // ── PORSCHE GT variants (premiums vs base comp median) ────────────────────
+  // GT3 RS: +30% over GT3, GT3 is ~80% over base Carrera — combined ~25% over median comp
+  { keywords: ["gt3 rs"],          brands: ["porsche"], pct: 0.30, label: "GT3 RS (+30% over base GT3 — Grant/BaT data)" },
+  // GT2 RS: 150-200% over base Carrera — comps will be Carrera-based, apply large multiplier
+  { keywords: ["gt2 rs"],          brands: ["porsche"], pct: 0.60, label: "GT2 RS (+60% over comp median — Grant: 150-200% vs base Carrera)" },
+  // GT3: ~80% over base Carrera on 991 gen (Grant: HIGH confidence)
+  { keywords: ["gt3"],             brands: ["porsche"], pct: 0.25, label: "GT3 (+25% over comp median — Grant: ~80% over base Carrera)" },
+  { keywords: ["gt4"],             brands: ["porsche"], pct: 0.12, label: "GT4 (+12% over base Cayman)" },
+  // Carrera RS 2.7: +80% over base (Grant: HIGH)
+  { keywords: ["rs 2.7", "rs2.7"], brands: ["porsche"], pct: 0.80, label: "Carrera RS 2.7 (+80% — Grant: most collectible 911s, HIGH confidence)" },
+  // Carrera RS (generic, covers 964 RS +80%, 993 RS +100% — use 80% as floor)
+  { keywords: ["carrera rs"],      brands: ["porsche"], pct: 0.80, label: "Carrera RS (+80% — Grant: 964 RS 80%, 993 RS 100%, HIGH confidence)" },
+
+  // ── FERRARI variants ──────────────────────────────────────────────────────
+  // GTS / Spider: +12-15% over coupe (Grant: 458 Spider ~12%, HIGH-MEDIUM confidence)
+  {
+    keywords: ["gts", "spider", "spyder"],
+    brands: ["ferrari"],
+    pct: 0.12,
+    label: "Ferrari open-top (+12% — Spider/GTS premium, Grant/BaT data)",
+  },
+  // Challenge Stradale: 2-3x base 360 — use 150% (Grant: HIGH confidence)
+  { keywords: ["challenge stradale"], brands: ["ferrari"], pct: 1.50, label: "Challenge Stradale (+150% — Grant: 2-3x base 360, HIGH confidence)" },
+  // Scuderia: +60% over base 430 (Grant: HIGH confidence)
+  { keywords: ["scuderia"],           brands: ["ferrari"], pct: 0.60, label: "Ferrari Scuderia (+60% — Grant: HIGH confidence)" },
+  // Pista: +80% over base 488 (Grant: HIGH confidence)
+  { keywords: ["pista"],              brands: ["ferrari"], pct: 0.80, label: "Ferrari Pista (+80% — Grant: HIGH confidence)" },
+  // Speciale: +90% over base 458 (Grant: HIGH confidence)
+  { keywords: ["speciale"],           brands: ["ferrari"], pct: 0.90, label: "Ferrari Speciale (+90% — Grant: HIGH confidence)" },
+  // Aperta: +35% over hardtop equivalent (Grant: MEDIUM confidence)
+  { keywords: ["aperta"],             brands: ["ferrari"], pct: 0.35, label: "Ferrari Aperta (+35% — Grant: MEDIUM confidence)" },
+
+  // ── LAMBORGHINI variants ──────────────────────────────────────────────────
+  // GTS/Spider/Spyder: +5-10% (Gallardo Spyder ~parity; Huracán Spyder slight premium)
+  {
+    keywords: ["spyder", "roadster"],
+    brands: ["lamborghini"],
+    pct: 0.05,
+    label: "Lamborghini open-top (+5% — Grant: Spyder holds slight premium)",
+  },
+  // SVJ: +80% over base Aventador (Grant: HIGH confidence)
+  { keywords: ["svj"],              brands: ["lamborghini"], pct: 0.80, label: "Aventador SVJ (+80% — Grant: HIGH confidence)" },
+  // SV: +40% over base (Grant: HIGH confidence)
+  { keywords: ["sv", "superveloce"], brands: ["lamborghini"], pct: 0.40, label: "Superveloce (+40% — Grant: HIGH confidence)" },
+  // STO: +50% over LP610-4 (Grant: HIGH confidence)
+  { keywords: ["sto"],              brands: ["lamborghini"], pct: 0.50, label: "Huracán STO (+50% — Grant: HIGH confidence)" },
+  // Performante: +30% over LP610-4 (Grant: HIGH confidence)
+  { keywords: ["performante"],      brands: ["lamborghini"], pct: 0.30, label: "Performante (+30% — Grant: HIGH confidence)" },
+  // Superleggera (Gallardo): +25% (Grant: MEDIUM confidence)
+  { keywords: ["superleggera"],     brands: ["lamborghini"], pct: 0.25, label: "Superleggera (+25% — Grant: MEDIUM confidence)" },
+
+  // ── BMW M variants ────────────────────────────────────────────────────────
+  // M3/M4 CSL: +40% (Grant: HIGH confidence — homologation special)
+  { keywords: ["m3 csl", "m4 csl"],  brands: ["bmw"], pct: 0.40, label: "CSL (+40% — Grant: homologation special, HIGH confidence)" },
+  // 1M: +30% (Grant: HIGH confidence)
+  { keywords: ["1m coupe", "1m "],   brands: ["bmw"], pct: 0.30, label: "1M (+30% — Grant: HIGH confidence)" },
+  // M2 CS: +20% (Grant: HIGH confidence)
+  { keywords: ["m2 cs"],             brands: ["bmw"], pct: 0.20, label: "M2 CS (+20% — Grant: HIGH confidence)" },
+  // M3/M4 Competition: +5% (Grant: MEDIUM confidence)
+  { keywords: ["m3 competition", "m4 competition"], brands: ["bmw"], pct: 0.05, label: "M Competition (+5%)" },
+
+  // ── MERCEDES-AMG variants ─────────────────────────────────────────────────
+  { keywords: ["black series"],      brands: ["mercedes"], pct: 0.40, label: "Black Series (+40%)" },
+  { keywords: ["gt r", "gtr"],       brands: ["mercedes"], pct: 0.25, label: "AMG GT R (+25%)" },
+  { keywords: ["gt black"],          brands: ["mercedes"], pct: 0.50, label: "AMG GT Black Series (+50%)" },
+
+  // ── HONDA variants ────────────────────────────────────────────────────────
+  // S2000 CR: +20% (Grant confirms, MEDIUM-HIGH confidence)
+  { keywords: ["club racer", "s2000 cr"], brands: ["honda"], pct: 0.20, label: "S2000 CR (+20% — Grant: MEDIUM-HIGH confidence)" },
+  { keywords: ["type r"],                 brands: ["honda", "acura"], pct: 0.20, label: "Type R (+20%)" },
 ];
 
 export function estimateHammerPrice(
@@ -375,10 +421,38 @@ export function estimateHammerPrice(
 
   // ── Tiptronic penalty on air-cooled Porsches (964, 993) ──
   // Manual is strongly preferred; Tiptronic commands ~10% less on these generations
-  // Tiptronic penalty on Porsche — manual is strongly preferred across all 911 generations on BaT
+  // ── Transmission adjustments (Grant research, 2026-03-17) ──────────────────
+
+  // Porsche Tiptronic — manual strongly preferred across all generations
+  // 964: -12%, 993: -10%, 996/997: -8% (use -10% as general Porsche penalty)
   if (/porsche/i.test(listingTitle) && /tiptronic/i.test(haystack)) {
     multiplier -= 0.10;
-    factors.push("Tiptronic transmission (−10% — manual strongly preferred by Porsche buyers)");
+    factors.push("Tiptronic transmission (−10% — Grant: manual strongly preferred, HIGH confidence)");
+  }
+
+  // Ferrari manual vs F1 paddle shift
+  // 360 manual: +20%, 430 manual: +15% (Grant: HIGH confidence)
+  const isFerrari = /ferrari/i.test(listingTitle);
+  const hasManual = /\b(manual|gated|6.speed|5.speed|stick.shift)\b/i.test(haystack);
+  const hasF1Shift = /\bf1.?(transmission|gearbox|paddle|shift|gear)\b/i.test(haystack);
+  if (isFerrari && hasManual && /(360|430)/i.test(listingTitle)) {
+    multiplier += 0.18;
+    factors.push("Ferrari manual gearbox (+18% — Grant: manual 360/430 commands ~15-20% premium over F1, HIGH confidence)");
+  }
+
+  // BMW E46 M3 SMG discount (Grant: -10%, HIGH confidence)
+  if (/bmw/i.test(listingTitle) && /m3/i.test(listingTitle) && /\bsmg\b/i.test(haystack)) {
+    multiplier -= 0.10;
+    factors.push("SMG transmission (−10% — Grant: aging sequential gearbox, manual preferred, HIGH confidence)");
+  }
+
+  // Lamborghini Gallardo manual — commands ~40% premium over e-gear (Grant: MEDIUM confidence)
+  const isGallardo = /gallardo/i.test(listingTitle);
+  const hasEGear = /e.gear|egear/i.test(haystack);
+  const hasGatedManual = /\bgated\b/i.test(haystack) || (/\bmanual\b/i.test(haystack) && isGallardo);
+  if (isGallardo && hasGatedManual && !hasEGear) {
+    multiplier += 0.40;
+    factors.push("Gallardo gated manual (+40% — Grant: factory manual extremely rare, commands large premium, MEDIUM confidence)");
   }
 
   // ── Dealer vs private ──
