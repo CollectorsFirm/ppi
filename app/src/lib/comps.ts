@@ -281,6 +281,34 @@ const VARIANT_PREMIUMS: Array<{ keywords: string[]; brands: string[]; pct: numbe
   // S2000 CR: +20% (Grant confirms, MEDIUM-HIGH confidence)
   { keywords: ["club racer", "s2000 cr"], brands: ["honda"], pct: 0.20, label: "S2000 CR (+20% — Grant: MEDIUM-HIGH confidence)" },
   { keywords: ["type r"],                 brands: ["honda", "acura"], pct: 0.20, label: "Type R (+20%)" },
+
+  // ── LAMBORGHINI Miura variants (Grant research, 2026-03-17) ──────────────
+  // Baseline: P400 coupe
+  { keywords: ["p400sv", "miura sv"],       brands: ["lamborghini"], pct: 0.45,  label: "Miura SV (+45% — Grant: most desirable production Miura, HIGH)" },
+  { keywords: ["p400s", "miura s"],         brands: ["lamborghini"], pct: 0.12,  label: "Miura S (+12% — Grant: improved over P400, HIGH)" },
+  { keywords: ["miura jota", "svj"],        brands: ["lamborghini"], pct: 6.00,  label: "Miura Jota/SVJ (+600% — Grant: effectively untradeable at standard benchmarks)" },
+
+  // ── LAMBORGHINI Countach variants (Grant research, 2026-03-17) ───────────
+  // Baseline: LP400S Series 3
+  { keywords: ["lp400", "periscopio"],           brands: ["lamborghini"], pct:  0.85,  label: "Countach LP400 Periscopio (+85% — Grant: narrow body, purist's choice, HIGH)" },
+  { keywords: ["quattrovalvole", "qv"],          brands: ["lamborghini"], pct: -0.18,  label: "Countach QV (−18% — Grant: most produced, supply depresses value, HIGH)" },
+  { keywords: ["25th anniversary"],              brands: ["lamborghini"], pct: -0.12,  label: "Countach 25th Anniversary (−12% — Grant: divisive styling, HIGH)" },
+
+  // ── LAMBORGHINI Diablo variants (Grant research, 2026-03-17) ─────────────
+  // Baseline: Diablo VT coupe
+  { keywords: ["diablo gtr", "diablo gt r"],     brands: ["lamborghini"], pct:  2.50,  label: "Diablo GTR (+250% — Grant: 30 built, track-only, HIGH)" },
+  { keywords: ["se30 jota"],                     brands: ["lamborghini"], pct:  1.10,  label: "Diablo SE30 Jota (+110% — Grant: ~12 built, HIGH)" },
+  { keywords: ["diablo gt "],                    brands: ["lamborghini"], pct:  1.85,  label: "Diablo GT (+185% — Grant: 80 built, pinnacle Diablo, HIGH)" },
+  { keywords: ["se30"],                          brands: ["lamborghini"], pct:  0.65,  label: "Diablo SE30 (+65% — Grant: 30th anniversary, 150 built, HIGH)" },
+  { keywords: ["diablo sv"],                     brands: ["lamborghini"], pct:  0.20,  label: "Diablo SV (+20% — Grant: driver's car, gaining momentum, HIGH)" },
+  { keywords: ["vt 6.0", "6.0 se"],             brands: ["lamborghini"], pct:  0.35,  label: "Diablo VT 6.0 (+35% — Grant: Audi-era final evolution, HIGH)" },
+
+  // ── LAMBORGHINI Murciélago variants (Grant research, 2026-03-17) ─────────
+  // Baseline: Murciélago base coupe
+  { keywords: ["lp670", "murci\u00e9lago sv", "murcielago sv"], brands: ["lamborghini"], pct: 0.80, label: "Murciélago LP670-4 SV (+80% — Grant: pinnacle Murciélago)" },
+  { keywords: ["lp650"],                         brands: ["lamborghini"], pct:  0.80,  label: "Murciélago LP650-4 Roadster (+80% — Grant: final roadster, 50 built)" },
+  { keywords: ["lp640"],                         brands: ["lamborghini"], pct:  0.25,  label: "Murciélago LP640 (+25% — Grant: 640hp, preferred over base, HIGH)" },
+  { keywords: ["murci\u00e9lago roadster", "murcielago roadster"], brands: ["lamborghini"], pct: 0.20, label: "Murciélago Roadster (+20% — Grant: open-top premium, HIGH)" },
 ];
 
 export function estimateHammerPrice(
