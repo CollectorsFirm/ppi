@@ -193,8 +193,8 @@ const VARIANT_PREMIUMS: Array<{ keywords: string[]; pct: number; label: string }
   { keywords: ["gts", "spider", "convertible", "cabriolet", "roadster", "targa"], pct: 0.15, label: "Open-top variant (+15% — GTS/Spider/Targa premium)" },
   { keywords: ["gt3 rs"],       pct: 0.30, label: "GT3 RS (+30% over base GT3)" },
   { keywords: ["gt2 rs"],       pct: 0.50, label: "GT2 RS (+50% over base GT2)" },
-  { keywords: ["challenge stradale", "cs"], pct: 0.40, label: "Challenge Stradale (+40%)" },
-  { keywords: ["scuderia"],     pct: 0.25, label: "Ferrari Scuderia (+25%)" },
+  { keywords: ["challenge stradale"],       pct: 0.40, label: "Challenge Stradale (+40%)" },
+  { keywords: ["scuderia"],                 pct: 0.25, label: "Ferrari Scuderia (+25%)" },
   { keywords: ["pista"],        pct: 0.20, label: "Ferrari Pista (+20%)" },
   { keywords: ["speciale"],     pct: 0.20, label: "Ferrari Speciale (+20%)" },
   { keywords: ["club racer", "cr "],  pct: 0.20, label: "S2000 CR (+20%)" },
@@ -325,6 +325,16 @@ export function estimateHammerPrice(
   if (hasNotableOwner) {
     multiplier += 0.10;
     factors.push("Notable previous owner (+10% provenance premium)");
+  }
+
+  // ── Tiptronic penalty on air-cooled Porsches (964, 993) ──
+  // Manual is strongly preferred; Tiptronic commands ~10% less on these generations
+  const isAirCooledPorsche = /porsche/i.test(listingTitle) &&
+    /(964|993|\b911\b)/i.test(listingTitle) &&
+    !/996|997|991|992|718|boxster|cayman/i.test(listingTitle);
+  if (isAirCooledPorsche && /tiptronic/i.test(haystack)) {
+    multiplier -= 0.10;
+    factors.push("Tiptronic transmission (−10% — manual strongly preferred on 964/993)");
   }
 
   // ── Dealer vs private ──
