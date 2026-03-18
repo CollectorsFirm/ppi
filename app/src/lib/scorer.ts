@@ -1,4 +1,5 @@
 import type { ListingData } from "./scraper";
+import { detectSpecialPrograms } from "./specialPrograms";
 
 export type ScoreBreakdown = {
   total: number;
@@ -67,6 +68,24 @@ export function scoreListing(listing: ListingData, audienceScore: number): Score
     docScore += 3; docSignals.push("Receipts or maintenance records on hand");
   }
 
+  // Special program documentation — confirms authenticity of bespoke factory programs
+  const detectedPrograms = detectSpecialPrograms(listing.title, listing.description);
+  if (detectedPrograms.length > 0) {
+    const programNames = detectedPrograms.map(p => p.name).join(", ");
+    // Check if documentation for the program is confirmed in the listing
+    const hasProgramDocs = contains(fullText, [
+      "specification plaque", "personalization plaque", "tailor made plaque",
+      "classiche", "red book", "coa", "certificate of authenticity",
+      "porsche passport", "window sticker", "build sheet", "order sheet",
+      "ad personam", "exclusive manufaktur documentation", "mso certificate",
+    ]);
+    if (hasProgramDocs) {
+      docScore += 5; docSignals.push(`${programNames} documentation confirmed`);
+    } else {
+      docScore += 2; docSignals.push(`${programNames} detected — verify documentation`);
+    }
+  }
+
   // Negative signals
   if (contains(fullText, [
     "unknown history", "unknown mileage", "no records", "no history",
@@ -85,22 +104,27 @@ export function scoreListing(listing: ListingData, audienceScore: number): Score
 
   // No-reserve is a strong positive signal on BaT
   if (contains(`${listing.title} ${fullText}`, ["no reserve", "no-reserve"])) {
-    transScore += 8; transSignals.push("No reserve — seller confident in market");
+    transScore += 6; transSignals.push("No reserve — seller confident in market");
   } else {
     transScore += 2; transSignals.push("Reserve auction");
   }
 
-  // Seller replies — match against actual seller username from listing
+  // Seller replies — only penalize if auction is mature (has meaningful comment activity)
+  // Early auctions (few comments, days remaining) shouldn't be penalized for seller silence
   const sellerReplies = listing.comments.filter(c => c.startsWith("[SELLER]")).length;
+  const isEarlyAuction = (listing.daysRemaining !== null && listing.daysRemaining >= 6) ||
+    listing.comments.length <= 5;
 
   if (sellerReplies >= 3) {
-    transScore += 6; transSignals.push("Seller actively answering questions");
+    transScore += 8; transSignals.push("Seller actively answering questions");
   } else if (sellerReplies >= 1) {
-    transScore += 3; transSignals.push("Seller present in comments");
+    transScore += 5; transSignals.push("Seller present in comments");
+  } else if (isEarlyAuction) {
+    transScore += 3; transSignals.push("Early auction — seller engagement not yet expected");
   } else if (listing.comments.length > 0) {
     transSignals.push("⚠️ Seller not participating in comments");
   } else {
-    transSignals.push("No comments yet to assess seller engagement");
+    transScore += 3; transSignals.push("No comments yet");
   }
 
   // Penalize vague or evasive language
@@ -199,49 +223,96 @@ export function scoreListing(listing: ListingData, audienceScore: number): Score
   }
 
   // ── 4. LISTING QUALITY (20 pts) ────────────────────────────────────────────
+  // This measures information completeness — how much does the listing answer before
+  // a buyer has to ask? A 20/20 listing leaves no obvious questions on the table.
   let qualScore = 0;
   const qualSignals: string[] = [];
 
-  // Description length — longer = more transparent
-  const descWords = listing.description.split(/\s+/).length;
-  if (descWords >= 300) { qualScore += 8; qualSignals.push(`Detailed description (${descWords} words)`); }
-  else if (descWords >= 150) { qualScore += 5; qualSignals.push(`Moderate description (${descWords} words)`); }
-  else if (descWords >= 75) { qualScore += 2; qualSignals.push(`Brief description (${descWords} words)`); }
-  else { qualScore -= 2; qualSignals.push(`⚠️ Very short description (${descWords} words)`); }
+  // ── Mechanical spec completeness (0-5 pts) ──
+  // Does the listing tell you exactly what's under the hood?
+  let mechPts = 0;
+  if (contains(fullText, ["engine", "motor", "cylinder", "displacement", "cubic", "liter", "cc", "v8", "v6", "v12", "flat-six", "inline-six", "boxer"])) mechPts++;
+  if (contains(fullText, ["transmission", "gearbox", "manual", "automatic", "dual-clutch", "dct", "pdk", "f1", "tiptronic", "transaxle"])) mechPts++;
+  if (contains(fullText, ["miles", "mileage", "kilometer", "odometer"])) mechPts++;
+  if (contains(fullText, ["vin", "chassis", "serial number", "zff", "wp0", "jh4"])) mechPts++;
+  if (contains(fullText, ["options", "equipped with", "features", "includes", "spec sheet", "specification"])) mechPts++;
+  qualScore += mechPts;
+  if (mechPts >= 4) qualSignals.push("Full mechanical spec disclosed");
+  else if (mechPts >= 2) qualSignals.push(`Partial mechanical spec (${mechPts}/5 elements)`);
+  else qualSignals.push("⚠️ Limited mechanical information");
 
-  // Photo count — BaT loads gallery dynamically, HTML proxy is always an undercount
-  // Score generously and never show a specific number (it will be wrong)
-  const photoCount = listing.photoCountProxy;
-  if (photoCount >= 20) { qualScore += 6; qualSignals.push("Extensive photo documentation"); }
-  else if (photoCount >= 10) { qualScore += 5; qualSignals.push("Good photo coverage"); }
-  else if (photoCount >= 4) { qualScore += 4; qualSignals.push("Photos present — view full gallery on listing"); }
-  else { qualScore += 4; qualSignals.push("Gallery loads dynamically — view on listing"); }
+  // ── Condition disclosure completeness (0-5 pts) ──
+  // Does the seller tell you about paint, interior, known flaws, and recent work?
+  let condDiscPts = 0;
+  if (contains(fullText, ["paint", "exterior", "finish", "bodywork", "body work"])) condDiscPts++;
+  if (contains(fullText, ["interior", "cabin", "upholstery", "leather", "seats", "carpet"])) condDiscPts++;
+  if (contains(fullText, ["mechanical", "runs", "drives", "engine", "recently serviced", "fresh service", "just serviced"])) condDiscPts++;
+  // Bonus: proactive flaw disclosure (honest seller)
+  if (contains(fullText, ["imperfect", "scratch", "scuff", "wear", "crack", "chip", "ding", "dent", "blemish", "noted in gallery", "highlighted in gallery"])) {
+    condDiscPts += 2; qualSignals.push("Seller proactively discloses imperfections");
+  }
+  qualScore += Math.min(condDiscPts, 5);
+  if (condDiscPts >= 3 && !qualSignals.some(s => s.includes("discloses"))) qualSignals.push("Paint, interior, and mechanical condition described");
+  else if (condDiscPts < 2) qualSignals.push("⚠️ Condition details sparse");
 
-  // Comment engagement — active BaT listings attract knowledgeable buyers
-  const commentCount = listing.comments.length;
-  if (commentCount >= 20) { qualScore += 6; qualSignals.push(`High community engagement (${commentCount} comments)`); }
-  else if (commentCount >= 10) { qualScore += 4; qualSignals.push(`Active comments (${commentCount} comments)`); }
-  else if (commentCount >= 3) { qualScore += 2; qualSignals.push(`Some community activity (${commentCount} comments)`); }
-  else { qualSignals.push("Low comment activity"); }
+  // ── History completeness (0-4 pts) ──
+  let histPts = 0;
+  if (contains(fullText, ["one owner", "1 owner", "two owner", "single owner", "owned since", "purchased new", "bought new", "original owner"])) histPts++;
+  if (contains(fullText, ["carfax", "autocheck", "vehicle history", "clean history", "accident-free", "accident free", "no accidents"])) histPts++;
+  if (contains(fullText, ["california", "arizona", "nevada", "texas", "florida", "dry climate", "southwestern", "west coast", "southeast"])) histPts++; // climate provenance
+  if (contains(fullText, ["acquired", "purchased", "bought", "previously owned", "prior owner", "from new"])) histPts++;
+  qualScore += Math.min(histPts, 4);
+  if (histPts >= 3) qualSignals.push("Strong ownership and history context");
+  else if (histPts >= 1) qualSignals.push("Some ownership history provided");
+  else qualSignals.push("⚠️ Ownership history not established");
+
+  // ── Special program / provenance documentation (0-3 pts) ──
+  // Does the listing document the things that matter most for this specific car?
+  if (contains(fullText, ["window sticker", "monroney", "build sheet", "spec sheet", "order sheet", "coa", "certificate of authenticity"])) {
+    qualScore += 3; qualSignals.push("Window sticker / factory build documentation confirmed");
+  } else if (contains(fullText, ["specification plaque", "personalization plaque", "tailor made plaque", "classiche", "red book", "porsche passport"])) {
+    qualScore += 3; qualSignals.push("Factory personalization / provenance documentation confirmed");
+  } else if (contains(fullText, ["tailor made", "paint to sample", "pts", "exclusive manufaktur", "ad personam", "bmw individual", "q division", "mso"])) {
+    qualScore += 1; qualSignals.push("Special program mentioned — documentation pending");
+  }
+
+  // ── Unanswered question penalty (−3 pts) ──
+  // If comments are full of basic questions the listing should have answered, dock it
+  const unansweredBasics = listing.comments.filter(c =>
+    !c.startsWith("[SELLER]") && c.includes("?") &&
+    contains(c, ["window sticker", "mileage", "service", "how many", "where is", "what color", "vin", "carfax", "history"])
+  ).length;
+  if (unansweredBasics >= 3) {
+    qualScore -= 3; qualSignals.push(`⚠️ Buyers asking basic questions the listing should answer (${unansweredBasics} instances)`);
+  }
 
   // ── 5. COMMUNITY RECEPTION (15 pts) ────────────────────────────────────────
   // Fully deterministic — no AI scoring here. Claude only writes the summary sentence.
   let commScore = 0;
   const commSignals: string[] = [];
 
+  // ── Watcher count — strong demand signal (0-4 pts) ──
+  // Normalize relative to what's typical on BaT (50 = decent, 150 = hot, 300+ = exceptional)
+  if (listing.watcherCount !== null) {
+    if (listing.watcherCount >= 300) { commScore += 4; commSignals.push(`Exceptional demand: ${listing.watcherCount} watchers`); }
+    else if (listing.watcherCount >= 150) { commScore += 3; commSignals.push(`High demand: ${listing.watcherCount} watchers`); }
+    else if (listing.watcherCount >= 75) { commScore += 2; commSignals.push(`Good interest: ${listing.watcherCount} watchers`); }
+    else if (listing.watcherCount >= 25) { commScore += 1; commSignals.push(`${listing.watcherCount} watchers`); }
+    else { commSignals.push(`Low watcher count: ${listing.watcherCount}`); }
+  }
+
   const totalComments = listing.comments.length;
   const sellerCommentCount = listing.comments.filter(c => c.startsWith("[SELLER]")).length;
   const nonSellerComments = listing.comments.filter(c => !c.startsWith("[SELLER]"));
 
   if (totalComments === 0) {
-    commScore = 5; // neutral baseline, no data yet
-    commSignals.push("No comments yet — neutral baseline");
+    commSignals.push("No comments yet");
   } else {
-    // ── Engagement volume (0-4 pts) ──
-    if (totalComments >= 30) { commScore += 4; commSignals.push(`High engagement: ${totalComments} comments`); }
-    else if (totalComments >= 15) { commScore += 3; commSignals.push(`Good engagement: ${totalComments} comments`); }
-    else if (totalComments >= 7) { commScore += 2; commSignals.push(`Moderate engagement: ${totalComments} comments`); }
-    else { commScore += 1; commSignals.push(`Low engagement: ${totalComments} comments`); }
+    // ── Engagement volume (0-3 pts) ──
+    if (totalComments >= 30) { commScore += 3; commSignals.push(`High engagement: ${totalComments} comments`); }
+    else if (totalComments >= 15) { commScore += 2; commSignals.push(`Good engagement: ${totalComments} comments`); }
+    else if (totalComments >= 7) { commScore += 1; commSignals.push(`Moderate engagement: ${totalComments} comments`); }
+    else { commSignals.push(`Early activity: ${totalComments} comments`); }
 
     // ── Seller responsiveness (0-4 pts) ──
     if (totalComments > 0) {
