@@ -124,6 +124,13 @@ export async function POST(request: Request) {
     );
   }
 
+  if (!url.includes("bringatrailer.com/listing/")) {
+    return NextResponse.json(
+      { error: "PPI only supports Bring a Trailer listing URLs (bringatrailer.com/listing/...)." },
+      { status: 400 }
+    );
+  }
+
   // Rate limiting disabled during development
   // const store = await cookies();
   // const scans = parseInt(store.get("ppi_scans")?.value ?? "0", 10);
