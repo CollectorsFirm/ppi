@@ -375,16 +375,10 @@ export function estimateHammerPrice(
 
   // ── Tiptronic penalty on air-cooled Porsches (964, 993) ──
   // Manual is strongly preferred; Tiptronic commands ~10% less on these generations
-  // Air-cooled Porsches: 964 (1989-1994) and 993 (1994-1998) only
-  // Exclude by generation code OR by year >= 1999 (996 onward)
-  const yearInTitle = listingTitle.match(/\b(19|20)(\d{2})\b/);
-  const listingYear = yearInTitle ? parseInt(yearInTitle[0]) : null;
-  const isAirCooledPorsche = /porsche/i.test(listingTitle) &&
-    (/(964|993)/i.test(listingTitle) || (/(911)/i.test(listingTitle) && listingYear !== null && listingYear <= 1998)) &&
-    !/\b996\b|\b997\b|\b991\b|\b992\b|\b718\b|boxster|cayman/i.test(listingTitle);
-  if (isAirCooledPorsche && /tiptronic/i.test(haystack)) {
+  // Tiptronic penalty on Porsche — manual is strongly preferred across all 911 generations on BaT
+  if (/porsche/i.test(listingTitle) && /tiptronic/i.test(haystack)) {
     multiplier -= 0.10;
-    factors.push("Tiptronic transmission (−10% — manual strongly preferred on 964/993)");
+    factors.push("Tiptronic transmission (−10% — manual strongly preferred by Porsche buyers)");
   }
 
   // ── Dealer vs private ──
