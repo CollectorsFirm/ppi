@@ -276,12 +276,18 @@ const SPECIAL_PROGRAMS: SpecialProgram[] = [
 /**
  * Detect any special programs mentioned in a listing title or description.
  * Returns all matching programs — a car could have multiple (e.g. PTS + Exclusive Manufaktur).
+ * Brand is always checked first — a Porsche program won't fire on a Jeep.
  */
 export function detectSpecialPrograms(title: string, description: string): SpecialProgram[] {
   const haystack = (title + " " + description).toLowerCase();
-  return SPECIAL_PROGRAMS.filter(program =>
-    program.indicators.some(indicator => haystack.includes(indicator))
-  );
+  return SPECIAL_PROGRAMS.filter(program => {
+    // Brand must appear in the listing before checking indicators
+    // Normalize hyphens so "rolls-royce" matches "rolls royce" and vice versa
+    const brandNorm = program.brand.toLowerCase().replace(/-/g, " ");
+    const haystackNorm = haystack.replace(/-/g, " ");
+    if (!haystackNorm.includes(brandNorm)) return false;
+    return program.indicators.some(indicator => haystack.includes(indicator));
+  });
 }
 
 /**
