@@ -189,15 +189,43 @@ const SPECIAL_PROGRAM_PREMIUMS: Record<string, { pct: number; label: string }> =
 };
 
 // Variant-specific premiums — when title/description indicates a rarer sub-model
-const VARIANT_PREMIUMS: Array<{ keywords: string[]; pct: number; label: string }> = [
-  { keywords: ["gts", "spider", "convertible", "cabriolet", "roadster", "targa"], pct: 0.15, label: "Open-top variant (+15% — GTS/Spider/Targa premium)" },
-  { keywords: ["gt3 rs"],       pct: 0.30, label: "GT3 RS (+30% over base GT3)" },
-  { keywords: ["gt2 rs"],       pct: 0.50, label: "GT2 RS (+50% over base GT2)" },
-  { keywords: ["challenge stradale"],       pct: 0.40, label: "Challenge Stradale (+40%)" },
-  { keywords: ["scuderia"],                 pct: 0.25, label: "Ferrari Scuderia (+25%)" },
-  { keywords: ["pista"],        pct: 0.20, label: "Ferrari Pista (+20%)" },
-  { keywords: ["speciale"],     pct: 0.20, label: "Ferrari Speciale (+20%)" },
-  { keywords: ["club racer", "cr "],  pct: 0.20, label: "S2000 CR (+20%)" },
+// brands: array of strings that must appear in the listing (any one match is sufficient)
+// Empty brands array = applies to any make
+const VARIANT_PREMIUMS: Array<{ keywords: string[]; brands: string[]; pct: number; label: string }> = [
+  // Open-top variants — only on makes where a coupe version also exists
+  {
+    keywords: ["gts", "spider", "targa", "cabriolet", "convertible", "roadster", "spyder"],
+    brands: ["ferrari", "porsche", "lamborghini", "mclaren", "aston martin", "bmw", "mercedes", "audi", "jaguar", "bentley"],
+    pct: 0.15,
+    label: "Open-top variant (+15% — GTS/Spider/Targa premium)",
+  },
+  // Porsche GT variants
+  { keywords: ["gt3 rs"],       brands: ["porsche"], pct: 0.30, label: "GT3 RS (+30% over base GT3)" },
+  { keywords: ["gt2 rs"],       brands: ["porsche"], pct: 0.50, label: "GT2 RS (+50% over base GT2)" },
+  { keywords: ["gt3"],          brands: ["porsche"], pct: 0.18, label: "GT3 (+18% over base Carrera)" },
+  { keywords: ["gt4"],          brands: ["porsche"], pct: 0.12, label: "GT4 (+12% over base Cayman)" },
+  { keywords: ["carrera rs", "rs 2.7", "rs2.7"], brands: ["porsche"], pct: 0.80, label: "Carrera RS (+80% — one of the most collectible 911s)" },
+  { keywords: ["carrera rs"],   brands: ["porsche"], pct: 0.60, label: "Carrera RS (+60%)" },
+  // Ferrari variants
+  { keywords: ["challenge stradale"], brands: ["ferrari"], pct: 0.40, label: "Challenge Stradale (+40%)" },
+  { keywords: ["scuderia"],           brands: ["ferrari"], pct: 0.25, label: "Ferrari Scuderia (+25%)" },
+  { keywords: ["pista"],              brands: ["ferrari"], pct: 0.20, label: "Ferrari Pista (+20%)" },
+  { keywords: ["speciale"],           brands: ["ferrari"], pct: 0.20, label: "Ferrari Speciale (+20%)" },
+  { keywords: ["aperta"],             brands: ["ferrari"], pct: 0.35, label: "Ferrari Aperta (+35% — open-top LaFerrari)" },
+  // Lamborghini variants
+  { keywords: ["sv", "superveloce"],  brands: ["lamborghini"], pct: 0.30, label: "Superveloce (+30%)" },
+  { keywords: ["sto"],                brands: ["lamborghini"], pct: 0.20, label: "Huracán STO (+20%)" },
+  { keywords: ["performante"],        brands: ["lamborghini"], pct: 0.15, label: "Performante (+15%)" },
+  // BMW variants
+  { keywords: ["m3 csl", "m4 csl"],  brands: ["bmw"], pct: 0.40, label: "CSL (+40% — homologation special)" },
+  { keywords: ["1m"],                 brands: ["bmw"], pct: 0.30, label: "1M (+30%)" },
+  { keywords: ["m2 cs"],              brands: ["bmw"], pct: 0.20, label: "M2 CS (+20%)" },
+  // Mercedes variants
+  { keywords: ["black series"],       brands: ["mercedes"], pct: 0.40, label: "Black Series (+40%)" },
+  { keywords: ["gtr", "gt r"],        brands: ["mercedes"], pct: 0.25, label: "AMG GT R (+25%)" },
+  // Honda variants
+  { keywords: ["club racer", "s2000 cr"], brands: ["honda"], pct: 0.20, label: "S2000 CR (+20%)" },
+  { keywords: ["type r"],             brands: ["honda", "acura"], pct: 0.20, label: "Type R (+20%)" },
 ];
 
 export function estimateHammerPrice(
@@ -258,6 +286,8 @@ export function estimateHammerPrice(
 
   if (!isRoadsterOnly) {
     for (const variant of VARIANT_PREMIUMS) {
+      // Brand must match if specified
+      if (variant.brands.length > 0 && !variant.brands.some(b => haystack.includes(b))) continue;
       if (variant.keywords.some(kw => haystack.includes(kw))) {
         // Skip if already covered by a special program with higher premium
         const alreadyCovered = specialPrograms?.some(p =>
