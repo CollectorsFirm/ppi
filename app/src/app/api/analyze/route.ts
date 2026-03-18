@@ -85,6 +85,8 @@ Guidelines:
 - PPF/CERAMIC: The absence of paint protection film (PPF) or ceramic coating is NEVER a red flag.
 - PHOTO COUNT: The photo count provided is a MINIMUM — BaT lazy-loads its gallery and only a subset of images appear in the initial HTML. Never flag or comment on photo count being low. Assume the full gallery exists on the listing page.
 - RESTOMOD/COACHBUILT: For professionally built cars (Singer, RWB, Magnus Walker, Emory, Safari builds, etc.) — the builder's completed work IS the provenance. Judge the build as-presented. Do not reference anything that existed before the build.
+- CURRENT YEAR: The current year is 2026. Do NOT flag 2026 dates as "future dates" or data entry errors — they are current. Only flag dates in 2027 or later as potentially anomalous.
+- READ THE LISTING: Before writing any flag, check whether the listing already addresses the concern. If the description explicitly documents something (e.g. a build sheet, specification plaque, service records, belt service), do NOT flag it as missing. Only flag absent documentation that is genuinely absent.
 - LOW MILEAGE ON COLLECTIBLES: Very low mileage on a collector car or restomod is NORMAL. Do NOT speculate about why the owner is selling or question their motives. If under ~1,000 miles, a watchOut about verifying fluids/service is appropriate — nothing else.
 
 ABSOLUTE NEVER LIST — these topics must NEVER appear anywhere in redFlags or watchOuts, in any phrasing:
@@ -129,6 +131,9 @@ const BANNED_FLAG_PATTERNS = [
   /pre-build/i,
   /before (singer|rwb|emory|gunther)/i,
   /original (engine|transmission|chassis) (before|prior)/i,
+  /future date/i,
+  /data entry error/i,
+  /acquisition date/i,
 ];
 
 function filterFlags(flags: Flag[]): Flag[] {
