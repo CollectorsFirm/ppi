@@ -348,7 +348,7 @@ const VARIANT_PREMIUMS: Array<{ keywords: string[]; brands: string[]; pct: numbe
   { keywords: ["sc cabriolet", "911sc cabriolet", "sc cab", "1983 cabriolet", "first cabriolet"], brands: ["porsche"], pct: -0.08, label: "911 SC Cabriolet (−8% vs coupe — first-ever 911 cab, 1983 only, ~4,200 built)" },
   { keywords: ["3.2 cabriolet", "carrera cabriolet", "carrera 3.2 cabriolet"],           brands: ["porsche"], pct: -0.08, label: "3.2 Carrera Cabriolet (−8% vs coupe — G-body cabs consistently discount vs coupes)" },
   { keywords: ["weissach edition", "sc weissach"],                                        brands: ["porsche"], pct:  0.12, label: "911 SC Weissach Edition (+12% — factory option, 436 US units, 1980 only)" },
-  { keywords: ["america roadster", "sc america roadster", "911sc roadster"],              brands: ["porsche"], pct:  0.90, label: "911 SC America Roadster (+90% — ~16 pre-production units, extreme rarity, flag for manual appraisal)" },
+  { keywords: ["america roadster", "sc america roadster", "911sc roadster"],              brands: ["porsche"], pct:  3.00, label: "911 SC America Roadster (+300% — ~20 built, $250-500k+ range, flag for specialist appraisal)" },
   // 3.2 Speedster — two tiers
   { keywords: ["speedster turbo look", "wide body speedster", "speedster widebody"],      brands: ["porsche"], pct:  2.40, label: "3.2 Speedster Wide Body (+240% vs 3.2 coupe — 823 built, Turbo Look body on Speedster)" },
   { keywords: ["3.2 speedster", "carrera speedster", "911 speedster 1988", "911 speedster 1989"], brands: ["porsche"], pct: 1.80, label: "3.2 Carrera Speedster (+180% vs 3.2 coupe — 2,103 total built, $170-350k+ range)" },

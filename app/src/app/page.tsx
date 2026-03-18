@@ -647,42 +647,7 @@ export default function Home() {
               </div>
             )}
 
-            {data.report.modelKnowledge && (
-              <div className="grid gap-6 sm:grid-cols-2">
-                <div className={`rounded-2xl border p-6 ${dark ? "border-white/10 bg-white/5" : "border-black/10 bg-white shadow-sm"}`}>
-                  <h3 className={`mb-1 text-xs font-semibold uppercase tracking-[0.2em] ${dark ? "text-white/50" : "text-[#6B6864]"}`}>⚙️ Known Model Issues</h3>
-                  <p className={`mb-3 text-xs ${dark ? "text-white/50" : "text-[#8A847C]"}`}>{data.report.modelKnowledge.matchedModel}</p>
-                  <ul className="space-y-2">
-                    {data.report.modelKnowledge.knownIssues.map((issue, i) => {
-                      const cfg = dark ? {
-                        critical: { badge: "bg-rose-400 text-black", bg: "bg-rose-400/10 border-rose-400/30", label: "CRITICAL" },
-                        watch: { badge: "bg-amber-400/30 text-amber-100", bg: "bg-amber-400/10 border-amber-400/25", label: "WATCH" },
-                        minor: { badge: "bg-white/10 text-white/60", bg: "bg-white/5 border-white/10", label: "MINOR" },
-                      }[issue.severity] : {
-                        critical: { badge: "bg-[#C0392B] text-white", bg: "bg-[#C0392B]/10 border-[#C0392B]/30", label: "CRITICAL" },
-                        watch: { badge: "bg-[#E67E22]/20 text-[#7A4517]", bg: "bg-[#E67E22]/10 border-[#E67E22]/25", label: "WATCH" },
-                        minor: { badge: "bg-black/10 text-[#6B6864]", bg: "bg-[#F7F3ED] border-black/10", label: "MINOR" },
-                      }[issue.severity];
-                      return (
-                        <li key={i} className={`rounded-xl border px-3 py-2 text-xs ${dark ? "text-white/70" : "text-[#4E4A45]"} ${cfg.bg}`}>
-                          <span className={`mr-2 rounded px-1.5 py-0.5 text-xs font-bold ${cfg.badge}`}>{cfg.label}</span>
-                          {issue.issue}
-                          {issue.yearsAffected && <span className={dark ? "ml-1 text-white/40" : "ml-1 text-[#8A847C]"}>({issue.yearsAffected})</span>}
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-                <div className={`rounded-2xl border p-6 ${dark ? "border-white/10 bg-white/5" : "border-black/10 bg-white shadow-sm"}`}>
-                  <h3 className={`mb-3 text-xs font-semibold uppercase tracking-[0.2em] ${dark ? "text-white/50" : "text-[#6B6864]"}`}>💡 Model Fun Facts</h3>
-                  <ul className="space-y-3">
-                    {data.report.modelKnowledge.funFacts.map((fact, i) => (
-                      <li key={i} className={`border-l-2 pl-3 text-xs ${dark ? "border-[#E8A020]/40 text-white/60" : "border-[#C0392B]/30 text-[#6B6864]"}`}>{fact}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            )}
+
 
             {/* ── Ask PPI Chat ── */}
             <div className={`rounded-2xl border overflow-hidden ${dark ? "border-white/10 bg-white/5" : "border-black/10 bg-white shadow-sm"}`}>
