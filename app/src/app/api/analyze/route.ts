@@ -6,6 +6,7 @@ import { scoreListing, scoreToLabel, type ScoreBreakdown } from "../../../lib/sc
 import { buildModelPageUrl, fetchMarketComps, formatCompsEstimate, estimateHammerPrice, isRestomomd, type MarketComps, type HammerEstimate } from "../../../lib/comps";
 import { fetchSellerProfile, type SellerProfile } from "../../../lib/seller";
 import { getModelKnowledge, type ModelKnowledge } from "../../../lib/modelKnowledge";
+import { detectSpecialPrograms, formatSpecialProgramsContext, type SpecialProgram } from "../../../lib/specialPrograms";
 
 export const runtime = "nodejs";
 
@@ -19,6 +20,7 @@ type ReportCard = {
   hammerEstimate: HammerEstimate | null;
   sellerProfile: SellerProfile | null;
   modelKnowledge: ModelKnowledge | null;
+  specialPrograms: SpecialProgram[];
   auctionStats: {
     bidCount: number | null;
     watcherCount: number | null;
@@ -208,7 +210,11 @@ export async function POST(request: Request) {
     );
   }
 
-  // ── Step 2: Claude writes the human analysis ──
+  // ── Step 2: Detect special programs ──
+  const specialPrograms = detectSpecialPrograms(listing.title, listing.description ?? "");
+  const specialProgramsContext = formatSpecialProgramsContext(specialPrograms);
+
+  // ── Step 3: Claude writes the human analysis ──
   const message = await client.messages.create({
     model: "claude-haiku-4-5",
     max_tokens: 1200,
@@ -221,7 +227,7 @@ export async function POST(request: Request) {
           ...listing,
           // Strip live auction bid from analysis context — bid is meaningless mid-auction
           price: listing.price.includes("live auction") ? "[Live auction — bid not shown]" : listing.price,
-        }, null, 2)}${comps ? `\n\nReal BaT market comps (${comps.count} recent sold listings):\nMedian: $${comps.median.toLocaleString()}\nLow: $${comps.low.toLocaleString()}\nHigh: $${comps.high.toLocaleString()}\nAverage: $${comps.average.toLocaleString()}\n\nUse these real comps for fairMarketEstimate — do not guess.` : ""}`,
+        }, null, 2)}${comps ? `\n\nReal BaT market comps (${comps.count} recent sold listings):\nMedian: $${comps.median.toLocaleString()}\nLow: $${comps.low.toLocaleString()}\nHigh: $${comps.high.toLocaleString()}\nAverage: $${comps.average.toLocaleString()}\n\nUse these real comps for fairMarketEstimate — do not guess.` : ""}${specialProgramsContext}`,
       },
     ],
   });
@@ -265,6 +271,7 @@ export async function POST(request: Request) {
     hammerEstimate,
     sellerProfile,
     modelKnowledge,
+    specialPrograms,
     auctionStats: {
       bidCount: listing.bidCount,
       watcherCount: listing.watcherCount,

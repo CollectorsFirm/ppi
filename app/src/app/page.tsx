@@ -47,6 +47,7 @@ type AuctionStats = { bidCount: number | null; watcherCount: number | null; days
 type SellerProfile = { username: string; profileUrl: string; memberSince: string | null; totalLikes: number | null; totalListings: number | null; totalBids: number | null; totalComments: number | null; liveAuctions: number | null; isLocalPartner: boolean; location: string | null };
 type KnownIssue = { issue: string; severity: "critical" | "watch" | "minor"; yearsAffected?: string };
 type ModelKnowledge = { matchedModel: string; knownIssues: KnownIssue[]; funFacts: string[] };
+type SpecialProgram = { name: string; brand: string; description: string; valuePremium: string; indicators: string[] };
 
 type ReportCard = {
   score: number;
@@ -54,6 +55,7 @@ type ReportCard = {
   auctionStats: AuctionStats;
   sellerProfile: SellerProfile | null;
   modelKnowledge: ModelKnowledge | null;
+  specialPrograms: SpecialProgram[];
   marketComps: MarketComps | null;
   hammerEstimate: HammerEstimate | null;
   scoreBreakdown: {
@@ -567,6 +569,24 @@ export default function Home() {
               </div>
             )}
 
+
+            {data.report.specialPrograms && data.report.specialPrograms.length > 0 && (
+              <div className={`rounded-2xl border p-6 ${dark ? "border-amber-400/30 bg-amber-400/5" : "border-amber-500/30 bg-amber-50 shadow-sm"}`}>
+                <h3 className={`mb-1 text-xs font-semibold uppercase tracking-[0.2em] ${dark ? "text-amber-400/80" : "text-amber-700"}`}>✨ Special Factory Program{data.report.specialPrograms.length > 1 ? "s" : ""} Detected</h3>
+                <p className={`mb-4 text-xs ${dark ? "text-white/40" : "text-amber-700/70"}`}>This listing involves factory bespoke or limited programs that affect value and documentation requirements.</p>
+                <div className="space-y-4">
+                  {data.report.specialPrograms.map((program, i) => (
+                    <div key={i} className={`rounded-xl border px-4 py-3 ${dark ? "border-amber-400/20 bg-amber-400/10" : "border-amber-500/20 bg-white"}`}>
+                      <div className="mb-1 flex items-center gap-2">
+                        <span className={`rounded px-2 py-0.5 text-xs font-bold ${dark ? "bg-amber-400/20 text-amber-300" : "bg-amber-100 text-amber-800"}`}>{program.name}</span>
+                      </div>
+                      <p className={`mb-2 text-xs ${dark ? "text-white/60" : "text-[#4E4A45]"}`}>{program.description}</p>
+                      <p className={`text-xs font-medium ${dark ? "text-amber-300/80" : "text-amber-700"}`}>💰 {program.valuePremium}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {data.report.modelKnowledge && (
               <div className="grid gap-6 sm:grid-cols-2">
