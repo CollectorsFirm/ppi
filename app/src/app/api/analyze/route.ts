@@ -173,11 +173,12 @@ function filterWatchOuts(items: string[]): string[] {
 }
 
 const parseJson = (text: string): AIAnalysis => {
-  const trimmed = text.trim();
+  // Strip markdown code fences if present (```json ... ``` or ``` ... ```)
+  const stripped = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```\s*$/, "").trim();
   try {
-    return JSON.parse(trimmed) as AIAnalysis;
+    return JSON.parse(stripped) as AIAnalysis;
   } catch {
-    const match = trimmed.match(/\{[\s\S]*\}/);
+    const match = stripped.match(/\{[\s\S]*\}/);
     if (!match) throw new Error("Invalid AI response");
     return JSON.parse(match[0]) as AIAnalysis;
   }
