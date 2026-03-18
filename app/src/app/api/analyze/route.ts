@@ -178,9 +178,31 @@ const parseJson = (text: string): AIAnalysis => {
   try {
     return JSON.parse(stripped) as AIAnalysis;
   } catch {
+    // Try extracting the outermost JSON object
     const match = stripped.match(/\{[\s\S]*\}/);
-    if (!match) throw new Error("Invalid AI response");
-    return JSON.parse(match[0]) as AIAnalysis;
+    if (match) {
+      try { return JSON.parse(match[0]) as AIAnalysis; } catch { /* fall through */ }
+    }
+    // Last resort: response was likely truncated — extract whatever arrays we can
+    const safe: AIAnalysis = {
+      greenFlags: [],
+      redFlags: [],
+      watchOuts: [],
+      fairMarketEstimate: "",
+      verdict: "Analysis incomplete — response was truncated. Please try again.",
+      audienceScore: 3,
+      audienceSentiment: "",
+      keyCommentInsights: [],
+      unansweredQuestions: [],
+    };
+    // Extract any complete arrays before truncation
+    const gf = stripped.match(/"greenFlags"\s*:\s*(\[[\s\S]*?\])/);
+    const rf = stripped.match(/"redFlags"\s*:\s*(\[[\s\S]*?\])/);
+    const wo = stripped.match(/"watchOuts"\s*:\s*(\[[\s\S]*?\])/);
+    try { if (gf) safe.greenFlags = JSON.parse(gf[1]); } catch { /* partial */ }
+    try { if (rf) safe.redFlags = JSON.parse(rf[1]); } catch { /* partial */ }
+    try { if (wo) safe.watchOuts = JSON.parse(wo[1]); } catch { /* partial */ }
+    return safe;
   }
 };
 
@@ -251,7 +273,7 @@ export async function POST(request: Request) {
   // ── Step 3: Claude writes the human analysis ──
   const message = await client.messages.create({
     model: "claude-haiku-4-5",
-    max_tokens: 1200,
+    max_tokens: 2000,
     temperature: 0.4,
     system: buildSystemPrompt(prelimBreakdown.total, prelimLabel),
     messages: [
