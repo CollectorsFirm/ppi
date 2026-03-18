@@ -88,16 +88,17 @@ export function scoreListing(listing: ListingData, audienceScore: number): Score
   const detectedPrograms = detectSpecialPrograms(listing.title, listing.description);
   if (detectedPrograms.length > 0) {
     const programNames = detectedPrograms.map(p => p.name).join(", ");
-    // Check if documentation for the program is confirmed in the listing
     const hasProgramDocs = contains(fullText, [
       "specification plaque", "personalization plaque", "personalization specifications plaque",
       "tailor made plaque", "tailor made equipment", "tailor made documentation",
-      "classiche", "red book", "coa", "certificate of authenticity",
-      "porsche passport", "window sticker", "build sheet", "order sheet",
+      "classiche", "red book", "porsche passport", "window sticker", "build sheet", "order sheet",
       "ad personam", "exclusive manufaktur documentation", "mso certificate",
       "factory colors", "factory options", "factory specification",
     ]);
-    if (hasProgramDocs) {
+    // CoA / Certificate of Authenticity is Porsche-only
+    const isPorsche = fullText.includes("porsche");
+    const hasCoa = isPorsche && contains(fullText, ["coa", "certificate of authenticity"]);
+    if (hasProgramDocs || hasCoa) {
       docScore += 5; docSignals.push(`${programNames} documentation confirmed`);
     } else {
       docScore += 2; docSignals.push(`${programNames} detected — verify documentation`);
@@ -302,7 +303,9 @@ export function scoreListing(listing: ListingData, audienceScore: number): Score
 
   // ── Special program / provenance documentation (0-3 pts) ──
   // Does the listing document the things that matter most for this specific car?
-  if (contains(fullText, ["window sticker", "monroney", "build sheet", "spec sheet", "order sheet", "coa", "certificate of authenticity"])) {
+  const isPorscheListing = fullText.includes("porsche");
+  const hasCoaDoc = isPorscheListing && contains(fullText, ["coa", "certificate of authenticity"]);
+  if (hasCoaDoc || contains(fullText, ["window sticker", "monroney", "build sheet", "spec sheet", "order sheet"])) {
     qualScore += 3; qualSignals.push("Window sticker / factory build documentation confirmed");
   } else if (contains(fullText, [
     "specification plaque", "personalization plaque", "personalization specifications plaque",
