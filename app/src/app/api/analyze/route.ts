@@ -87,6 +87,7 @@ Guidelines:
 - RESTOMOD/COACHBUILT: For professionally built cars (Singer, RWB, Magnus Walker, Emory, Safari builds, etc.) — the builder's completed work IS the provenance. Judge the build as-presented. Do not reference anything that existed before the build.
 - CURRENT YEAR: The current year is 2026. Do NOT flag 2026 dates as "future dates" or data entry errors — they are current. Only flag dates in 2027 or later as potentially anomalous.
 - READ THE LISTING: Before writing any flag, check whether the listing already addresses the concern. If the description explicitly documents something (e.g. a build sheet, specification plaque, service records, belt service), do NOT flag it as missing. Only flag absent documentation that is genuinely absent.
+- SPECIAL PROGRAM DOCS: If the listing mentions a personalization specifications plaque, Tailor Made plaque, factory color plaque, Classiche red book, CoA, window sticker, or any factory documentation — that IS the documentation. Do NOT flag it as missing or unconfirmed. Do NOT flag that commenters are asking for the window sticker as evidence of missing docs — buyers always ask; it doesn't mean it's absent.
 - LOW MILEAGE ON COLLECTIBLES: Very low mileage on a collector car or restomod is NORMAL. Do NOT speculate about why the owner is selling or question their motives. If under ~1,000 miles, a watchOut about verifying fluids/service is appropriate — nothing else.
 
 ABSOLUTE NEVER LIST — these topics must NEVER appear anywhere in redFlags or watchOuts, in any phrasing:
@@ -134,6 +135,12 @@ const BANNED_FLAG_PATTERNS = [
   /future date/i,
   /data entry error/i,
   /acquisition date/i,
+  /window sticker.*not (confirmed|present|included|provided|mentioned|explicitly)/i,
+  /no (window sticker|build sheet|spec sheet|classiche|coa|personalization (plaque|certificate|documentation))/i,
+  /tailor made (documentation|build sheet|plaque|certificate).*(not|missing|absent|unconfirmed|unclear|uncertain)/i,
+  /documentation.*(not|missing|absent|unconfirmed|unclear|uncertain).*(tailor made|special program|bespoke|personalization)/i,
+  /uncertainty about.*(documentation|completeness|factory)/i,
+  /suggesting uncertainty/i,
 ];
 
 function filterFlags(flags: Flag[]): Flag[] {

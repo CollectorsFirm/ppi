@@ -74,10 +74,12 @@ export function scoreListing(listing: ListingData, audienceScore: number): Score
     const programNames = detectedPrograms.map(p => p.name).join(", ");
     // Check if documentation for the program is confirmed in the listing
     const hasProgramDocs = contains(fullText, [
-      "specification plaque", "personalization plaque", "tailor made plaque",
+      "specification plaque", "personalization plaque", "personalization specifications plaque",
+      "tailor made plaque", "tailor made equipment", "tailor made documentation",
       "classiche", "red book", "coa", "certificate of authenticity",
       "porsche passport", "window sticker", "build sheet", "order sheet",
       "ad personam", "exclusive manufaktur documentation", "mso certificate",
+      "factory colors", "factory options", "factory specification",
     ]);
     if (hasProgramDocs) {
       docScore += 5; docSignals.push(`${programNames} documentation confirmed`);
@@ -270,7 +272,11 @@ export function scoreListing(listing: ListingData, audienceScore: number): Score
   // Does the listing document the things that matter most for this specific car?
   if (contains(fullText, ["window sticker", "monroney", "build sheet", "spec sheet", "order sheet", "coa", "certificate of authenticity"])) {
     qualScore += 3; qualSignals.push("Window sticker / factory build documentation confirmed");
-  } else if (contains(fullText, ["specification plaque", "personalization plaque", "tailor made plaque", "classiche", "red book", "porsche passport"])) {
+  } else if (contains(fullText, [
+    "specification plaque", "personalization plaque", "personalization specifications plaque",
+    "tailor made plaque", "tailor made equipment", "factory colors", "factory options",
+    "classiche", "red book", "porsche passport",
+  ])) {
     qualScore += 3; qualSignals.push("Factory personalization / provenance documentation confirmed");
   } else if (contains(fullText, ["tailor made", "paint to sample", "pts", "exclusive manufaktur", "ad personam", "bmw individual", "q division", "mso"])) {
     qualScore += 1; qualSignals.push("Special program mentioned — documentation pending");
