@@ -303,6 +303,15 @@ export function estimateHammerPrice(
     factors.push("Moderate community interest (+2%)");
   }
 
+  // ── Notable previous owner provenance ──
+  const hasNotableOwner =
+    /^(no reserve:\s*)?ex-/i.test(listingTitle) ||
+    /(previously owned by|former owner|originally owned by|originally purchased by|acquired new by|delivered new to|celebrity|race driver|racing driver|nascar|formula 1|f1 driver|indycar|professional athlete|nfl|nba|mlb)/i.test(haystack);
+  if (hasNotableOwner) {
+    multiplier += 0.10;
+    factors.push("Notable previous owner (+10% provenance premium)");
+  }
+
   // ── Dealer vs private ──
   const isDealer = listingTitle.toLowerCase().includes("dealer") ||
     listingSpecs.some(s => s.toLowerCase().includes("dealer"));

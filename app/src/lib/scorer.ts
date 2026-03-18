@@ -69,6 +69,21 @@ export function scoreListing(listing: ListingData, audienceScore: number): Score
     docScore += 3; docSignals.push("Receipts or maintenance records on hand");
   }
 
+  // Notable previous owner provenance — celebrity, athlete, racing driver, etc.
+  // BaT commonly uses "Ex-[Name]" in the title; descriptions elaborate with who they are
+  const hasNotableOwner =
+    /^(no reserve:\s*)?ex-/i.test(listing.title) ||
+    contains(fullText, [
+      "previously owned by", "former owner", "originally owned by",
+      "originally purchased by", "acquired new by", "delivered new to",
+      "celebrity", "race driver", "racing driver", "nascar", "formula 1", "f1 driver",
+      "indycar", "imsa", "le mans driver", "factory driver",
+      "nfl", "nba", "mlb", "professional athlete",
+    ]);
+  if (hasNotableOwner) {
+    docScore += 4; docSignals.push("Notable previous owner — adds provenance and collectibility");
+  }
+
   // Special program documentation — confirms authenticity of bespoke factory programs
   const detectedPrograms = detectSpecialPrograms(listing.title, listing.description);
   if (detectedPrograms.length > 0) {
