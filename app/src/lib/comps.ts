@@ -241,17 +241,33 @@ export function estimateHammerPrice(
   }
 
   // ── Variant premium — GTS, Spider, RS, CS, etc. command more than base model comps ──
+  // Only applies when the open-top body style is a SUB-VARIANT of a model that also came closed.
+  // Exclude models that were roadster/convertible-only from the factory — no coupe baseline exists.
+  const ROADSTER_ONLY_MODELS = [
+    "z8", "z3 m roadster", "z3 roadster", "z4 m roadster",
+    "boxster", // base Boxster is always open; Cayman is the coupe
+    "s2000",   // always a roadster
+    "miata", "mx-5", "mx5",
+    "lotus elise", "lotus exige", "lotus evora", // open by default
+    "ferrari barchetta",
+    "lamborghini murcielago roadster",
+    "mc12", // always open
+  ];
   const haystack = (listingTitle + " " + (listingDescription ?? "")).toLowerCase();
-  for (const variant of VARIANT_PREMIUMS) {
-    if (variant.keywords.some(kw => haystack.includes(kw))) {
-      // Skip if already covered by a special program with higher premium
-      const alreadyCovered = specialPrograms?.some(p =>
-        SPECIAL_PROGRAM_PREMIUMS[p.name]?.pct >= variant.pct
-      );
-      if (!alreadyCovered) {
-        multiplier += variant.pct;
-        factors.push(variant.label);
-        break; // only apply the first matching variant
+  const isRoadsterOnly = ROADSTER_ONLY_MODELS.some(m => haystack.includes(m));
+
+  if (!isRoadsterOnly) {
+    for (const variant of VARIANT_PREMIUMS) {
+      if (variant.keywords.some(kw => haystack.includes(kw))) {
+        // Skip if already covered by a special program with higher premium
+        const alreadyCovered = specialPrograms?.some(p =>
+          SPECIAL_PROGRAM_PREMIUMS[p.name]?.pct >= variant.pct
+        );
+        if (!alreadyCovered) {
+          multiplier += variant.pct;
+          factors.push(variant.label);
+          break; // only apply the first matching variant
+        }
       }
     }
   }
