@@ -192,20 +192,29 @@ const SPECIAL_PROGRAM_PREMIUMS: Record<string, { pct: number; label: string }> =
 // brands: array of strings that must appear in the listing (any one match is sufficient)
 // Empty brands array = applies to any make
 const VARIANT_PREMIUMS: Array<{ keywords: string[]; brands: string[]; pct: number; label: string }> = [
-  // Open-top variants — only on makes where a coupe version also exists
+  // Open-top variants — GTS/Spider/Targa command a premium on most makes
   {
-    keywords: ["gts", "spider", "targa", "cabriolet", "convertible", "roadster", "spyder"],
+    keywords: ["gts", "spider", "spyder", "targa"],
     brands: ["ferrari", "porsche", "lamborghini", "mclaren", "aston martin", "bmw", "mercedes", "audi", "jaguar", "bentley"],
     pct: 0.15,
     label: "Open-top variant (+15% — GTS/Spider/Targa premium)",
   },
+  // Cabriolet on Porsche 911 is a value detractor vs coupe — heavier, softer, less desirable
+  {
+    keywords: ["cabriolet", "convertible"],
+    brands: ["porsche"],
+    pct: -0.10,
+    label: "Cabriolet/Convertible (−10% vs coupe — less desirable to Porsche enthusiasts)",
+  },
+  // Cabriolet/convertible on other brands — neutral to slight premium depending on model; skip for now
+
   // Porsche GT variants
   { keywords: ["gt3 rs"],       brands: ["porsche"], pct: 0.30, label: "GT3 RS (+30% over base GT3)" },
   { keywords: ["gt2 rs"],       brands: ["porsche"], pct: 0.50, label: "GT2 RS (+50% over base GT2)" },
   { keywords: ["gt3"],          brands: ["porsche"], pct: 0.18, label: "GT3 (+18% over base Carrera)" },
   { keywords: ["gt4"],          brands: ["porsche"], pct: 0.12, label: "GT4 (+12% over base Cayman)" },
-  { keywords: ["carrera rs", "rs 2.7", "rs2.7"], brands: ["porsche"], pct: 0.80, label: "Carrera RS (+80% — one of the most collectible 911s)" },
-  { keywords: ["carrera rs"],   brands: ["porsche"], pct: 0.60, label: "Carrera RS (+60%)" },
+  { keywords: ["rs 2.7", "rs2.7"], brands: ["porsche"], pct: 0.80, label: "Carrera RS 2.7 (+80% — one of the most collectible 911s ever)" },
+  { keywords: ["carrera rs"],      brands: ["porsche"], pct: 0.60, label: "Carrera RS (+60%)" },
   // Ferrari variants
   { keywords: ["challenge stradale"], brands: ["ferrari"], pct: 0.40, label: "Challenge Stradale (+40%)" },
   { keywords: ["scuderia"],           brands: ["ferrari"], pct: 0.25, label: "Ferrari Scuderia (+25%)" },
@@ -285,18 +294,25 @@ export function estimateHammerPrice(
   const isRoadsterOnly = ROADSTER_ONLY_MODELS.some(m => haystack.includes(m));
 
   if (!isRoadsterOnly) {
+    let appliedPositiveVariant = false;
     for (const variant of VARIANT_PREMIUMS) {
       // Brand must match if specified
       if (variant.brands.length > 0 && !variant.brands.some(b => haystack.includes(b))) continue;
       if (variant.keywords.some(kw => haystack.includes(kw))) {
-        // Skip if already covered by a special program with higher premium
-        const alreadyCovered = specialPrograms?.some(p =>
-          SPECIAL_PROGRAM_PREMIUMS[p.name]?.pct >= variant.pct
-        );
-        if (!alreadyCovered) {
+        if (variant.pct < 0) {
+          // Penalties always apply regardless of other matches
           multiplier += variant.pct;
           factors.push(variant.label);
-          break; // only apply the first matching variant
+        } else if (!appliedPositiveVariant) {
+          // Only apply the first (highest) positive variant premium
+          const alreadyCovered = specialPrograms?.some(p =>
+            SPECIAL_PROGRAM_PREMIUMS[p.name]?.pct >= variant.pct
+          );
+          if (!alreadyCovered) {
+            multiplier += variant.pct;
+            factors.push(variant.label);
+            appliedPositiveVariant = true;
+          }
         }
       }
     }
