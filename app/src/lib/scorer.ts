@@ -214,6 +214,11 @@ export function scoreListing(listing: ListingData, audienceScore: number): Score
     condScore += 3; condSignals.push("Recent mechanical work / restoration");
   }
 
+  // Aftermarket ECU tune — legitimate concern on any high-value car
+  if (contains(fullText, ["ecu tune", "ecu remap", "aftermarket tune", "aftermarket ecu", "engine tune", "remapped", "chipped", "performance tune"])) {
+    condScore -= 4; condSignals.push("⚠️ Aftermarket ECU tune — warranty, reliability, and resale implications");
+  }
+
   // Accident/damage history
   if (contains(fullText, ["accident", "collision", "flood", "fire damage", "salvage"])) {
     condScore -= 7; condSignals.push("⚠️ Accident or damage history mentioned");
