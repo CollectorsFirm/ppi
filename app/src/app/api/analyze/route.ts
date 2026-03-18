@@ -102,6 +102,41 @@ Before finalizing your response, check every redFlag and watchOut against this l
 - keyCommentInsights: 3-5 most useful things from comments. Empty array if none.
 - unansweredQuestions: 2-4 important unanswered questions from comments. Empty array if none.`;
 
+// Hard-blocked phrases — if any flag contains one of these keywords/phrases, strip it entirely
+const BANNED_FLAG_PATTERNS = [
+  /dyno/i,
+  /horsepower/i,
+  /performance (claim|verif|output|spec)/i,
+  /engine output/i,
+  /power output/i,
+  /tune (characteristic|spec|verif)/i,
+  /consignment/i,
+  /owner commentary/i,
+  /owner history/i,
+  /how (the car was|it was) (driven|stored|maintained)/i,
+  /pre-purchase inspection/i,
+  /\bppi\b/i,
+  /25.year rule/i,
+  /import restriction/i,
+  /dot\/epa/i,
+  /homologation/i,
+  /tariff/i,
+  /photo count/i,
+  /why (the owner|they|seller) (is|are|might be) selling/i,
+  /reason for selling/i,
+  /pre-build/i,
+  /before (singer|rwb|emory|gunther)/i,
+  /original (engine|transmission|chassis) (before|prior)/i,
+];
+
+function filterFlags(flags: Flag[]): Flag[] {
+  return flags.filter(f => !BANNED_FLAG_PATTERNS.some(pattern => pattern.test(f.text)));
+}
+
+function filterWatchOuts(items: string[]): string[] {
+  return items.filter(item => !BANNED_FLAG_PATTERNS.some(pattern => pattern.test(item)));
+}
+
 const parseJson = (text: string): AIAnalysis => {
   const trimmed = text.trim();
   try {
@@ -195,7 +230,14 @@ export async function POST(request: Request) {
     .map((block) => (block.type === "text" ? block.text : ""))
     .join("\n");
 
-  const aiAnalysis = parseJson(content);
+  const rawAnalysis = parseJson(content);
+
+  // Hard-filter any flags that slipped through the prompt rules
+  const aiAnalysis: AIAnalysis = {
+    ...rawAnalysis,
+    redFlags: filterFlags(rawAnalysis.redFlags),
+    watchOuts: filterWatchOuts(rawAnalysis.watchOuts),
+  };
 
   // ── Step 3: Re-run scorer (audienceScore from Claude is ignored — community score is deterministic) ──
   const finalBreakdown = scoreListing(listing, 0);
