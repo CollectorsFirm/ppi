@@ -309,6 +309,48 @@ const VARIANT_PREMIUMS: Array<{ keywords: string[]; brands: string[]; pct: numbe
   { keywords: ["lp650"],                         brands: ["lamborghini"], pct:  0.80,  label: "Murciélago LP650-4 Roadster (+80% — Grant: final roadster, 50 built)" },
   { keywords: ["lp640"],                         brands: ["lamborghini"], pct:  0.25,  label: "Murciélago LP640 (+25% — Grant: 640hp, preferred over base, HIGH)" },
   { keywords: ["murci\u00e9lago roadster", "murcielago roadster"], brands: ["lamborghini"], pct: 0.20, label: "Murciélago Roadster (+20% — Grant: open-top premium, HIGH)" },
+
+  // ── PORSCHE 930 variants (Grant research, 2026-03-17) ─────────────────────
+  // Baseline: mid-run 930 Turbo
+  { keywords: ["flachbau", "slant nose", "slantnose", "flat nose", "flatnose"], brands: ["porsche"], pct: 0.60, label: "930 Flatnose/Slantnose (+60% — Grant: factory M505/M506 option, HIGH)" },
+
+  // ── PORSCHE 356 variants (Grant research, 2026-03-17) ─────────────────────
+  // Baseline: 356 coupe
+  { keywords: ["speedster"],                 brands: ["porsche"], pct: 0.70, label: "356 Speedster (+70% vs coupe — Grant: most desirable body style, HIGH)" },
+  { keywords: ["356 cabriolet", "356 cab"],  brands: ["porsche"], pct: 0.25, label: "356 Cabriolet (+25% vs coupe — Grant: HIGH)" },
+  { keywords: ["carrera 2.0", "carrera gt", "type 547", "carrera engine", "356 carrera"], brands: ["porsche"], pct: 1.50, label: "356 Carrera engine (+150% — Grant: DOHC Type 547, stratospheric premium, HIGH)" },
+  { keywords: ["super 90", "super90"],       brands: ["porsche"], pct: 0.15, label: "356 Super 90 (+15% — Grant: MEDIUM)" },
+
+  // ── PORSCHE 914 variants (Grant research, 2026-03-17) ─────────────────────
+  { keywords: ["914/6", "914-6"],            brands: ["porsche"], pct: 0.80, label: "914/6 (+80% vs 914/4 — Grant: 3,300 built, flat-six, HIGH)" },
+  { keywords: ["914/6 gt", "914-6 gt"],      brands: ["porsche"], pct: 5.00, label: "914/6 GT (+500% — Grant: 16 works cars, ~$1M, HIGH)" },
+
+  // ── PORSCHE 968 variants (Grant research, 2026-03-17) ─────────────────────
+  { keywords: ["968 cs", "968 club sport"],  brands: ["porsche"], pct: 0.55, label: "968 Club Sport (+55% — Grant: 200 lbs lighter, HIGH)" },
+
+  // ── FERRARI 308/328 variants (Grant research, 2026-03-17) ────────────────
+  // Baseline: 308 GTBi/GTSi (injection)
+  { keywords: ["vetroresina"],               brands: ["ferrari"], pct: 0.80, label: "308 Vetroresina (+80% — Grant: fiberglass body, ~712 built, HIGH)" },
+  { keywords: ["308 gtb"],                   brands: ["ferrari"], pct: 0.08, label: "308 GTB (+8% vs GTS — Grant: coupe rarer than targa, MEDIUM)" },
+
+  // ── FERRARI Testarossa family (Grant research, 2026-03-17) ───────────────
+  // Baseline: Testarossa
+  { keywords: ["f512 m", "512 m"],           brands: ["ferrari"], pct: 0.70, label: "F512 M (+70% vs 512 TR — Grant: 501 built, last and rarest, HIGH)" },
+  { keywords: ["512 tr"],                    brands: ["ferrari"], pct: 0.35, label: "512 TR (+35% vs Testarossa — Grant: better dynamics, HIGH)" },
+  { keywords: ["monospecchio"],              brands: ["ferrari"], pct: 0.20, label: "Testarossa Monospecchio (+20% — Grant: single-mirror early cars, MEDIUM)" },
+
+  // ── FERRARI F355 variants (Grant research, 2026-03-17) ───────────────────
+  // Baseline: F355 Spider F1
+  { keywords: ["f355 gts", "355 gts"],       brands: ["ferrari"], pct: 0.48, label: "F355 GTS (+48% vs Spider — Grant: rarest body style, MEDIUM)" },
+  { keywords: ["f355 berlinetta", "355 berlinetta"], brands: ["ferrari"], pct: 0.10, label: "F355 Berlinetta (+10% vs Spider — Grant: HIGH)" },
+
+  // ── MERCEDES 300SL (Grant research, 2026-03-17) ───────────────────────────
+  { keywords: ["gullwing", "300 sl gullwing", "300sl gullwing"], brands: ["mercedes"], pct: 0.40, label: "300SL Gullwing (+40% vs Roadster — Grant: iconic, museum piece, HIGH)" },
+
+  // ── MERCEDES Pagoda (Grant research, 2026-03-17) ──────────────────────────
+  // Baseline: 280SL
+  { keywords: ["230sl", "230 sl"],           brands: ["mercedes"], pct: -0.41, label: "230SL (−41% vs 280SL — Grant: least powerful, HIGH)" },
+  { keywords: ["250sl", "250 sl"],           brands: ["mercedes"], pct: -0.37, label: "250SL (−37% vs 280SL — Grant: rarer but less refined, HIGH)" },
 ];
 
 export function estimateHammerPrice(
@@ -481,6 +523,63 @@ export function estimateHammerPrice(
   if (isGallardo && hasGatedManual && !hasEGear) {
     multiplier += 0.40;
     factors.push("Gallardo gated manual (+40% — Grant: factory manual extremely rare, commands large premium, MEDIUM confidence)");
+  }
+
+  // 930 Turbo 1989 (final year, G50 gearbox) commands ~20% over mid-run cars
+  if (/porsche/i.test(listingTitle) && /930/i.test(listingTitle)) {
+    const yr = listingTitle.match(/\b(19\d{2})\b/);
+    if (yr && parseInt(yr[1]) === 1989) {
+      multiplier += 0.20;
+      factors.push("930 Turbo 1989 (+20% — Grant: final year, G50 gearbox, most desirable, HIGH)");
+    }
+  }
+
+  // Toyota Supra MKIV manual vs auto (Grant: HIGH confidence)
+  if (/supra/i.test(listingTitle) && /\bmanual\b/i.test(haystack)) {
+    multiplier += 0.25;
+    factors.push("Supra MKIV manual (+25% — Grant: manual commands significant premium over auto, HIGH)");
+  }
+
+  // NSX manual vs auto (NA1 era — Grant: HIGH confidence)
+  if (/\bnsx\b/i.test(listingTitle) && /\bmanual\b/i.test(haystack) && !/type.?r/i.test(haystack)) {
+    multiplier += 0.15;
+    factors.push("NSX manual (+15% — Grant: manual preferred over auto, HIGH)");
+  }
+
+  // E30 M3 Sport Evolution (Grant: +40% over standard E30 M3, HIGH)
+  if (/e30/i.test(haystack) && /m3/i.test(listingTitle) && /sport.?evo/i.test(haystack)) {
+    multiplier += 0.40;
+    factors.push("E30 M3 Sport Evolution (+40% — Grant: homologation special, most valuable E30 M3, HIGH)");
+  }
+
+  // BMW 850CSi vs 840/850i (Grant: +35% premium, HIGH)
+  if (/bmw/i.test(listingTitle) && /850csi/i.test(haystack)) {
+    multiplier += 0.35;
+    factors.push("850CSi (+35% vs 840/850i — Grant: M70 V12, rarest 8-series, HIGH)");
+  }
+
+  // C2 Corvette fuel injection premium (Grant: +20%, HIGH)
+  if (/corvette/i.test(listingTitle) && /(fuel.inject|fuelie)/i.test(haystack)) {
+    multiplier += 0.20;
+    factors.push("C2 Corvette fuel injection (+20% — Grant: 'Fuelie' premium, HIGH)");
+  }
+
+  // Shelby GT350R vs GT350 (Grant: +30%, HIGH)
+  if (/shelby/i.test(listingTitle) && /gt350r/i.test(haystack)) {
+    multiplier += 0.30;
+    factors.push("GT350R (+30% vs GT350 — Grant: race-prepared, track-only option, HIGH)");
+  }
+
+  // 1969 Camaro COPO (Grant: +80-200% over base, HIGH)
+  if (/camaro/i.test(listingTitle) && /copo/i.test(haystack)) {
+    multiplier += 1.20;
+    factors.push("COPO Camaro (+120% — Grant: central office production order, HIGH)");
+  }
+
+  // Honda 190E Cosworth (Grant: +40% over base 190E, HIGH)
+  if (/190e/i.test(listingTitle) && /(cosworth|2\.3.16|2\.5.16)/i.test(haystack)) {
+    multiplier += 0.40;
+    factors.push("190E Cosworth (+40% vs base 190E — Grant: HIGH)");
   }
 
   // ── Dealer vs private ──
