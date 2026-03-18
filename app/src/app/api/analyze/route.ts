@@ -87,7 +87,8 @@ Guidelines:
 - RESTOMOD/COACHBUILT: For professionally built cars (Singer, RWB, Magnus Walker, Emory, Safari builds, etc.) — the builder's completed work IS the provenance. Judge the build as-presented. Do not reference anything that existed before the build.
 - AFTERMARKET ENGINE MODIFICATIONS: An aftermarket ECU tune, engine remap, or performance software on a collector car or high-value exotic IS a legitimate red flag and MUST be flagged. It raises real concerns: warranty voiding, unknown tune quality, potential impact on reliability and resale. Flag it as moderate or major depending on the car's value and collectibility. An aftermarket exhaust alone is minor; an aftermarket ECU tune is always at least moderate.
 - CURRENT YEAR: The current year is 2026. Do NOT flag 2026 dates as "future dates" or data entry errors — they are current. Only flag dates in 2027 or later as potentially anomalous.
-- FLAG CONSOLIDATION: Each red flag must represent a distinct concern. Do NOT write multiple flags about the same underlying issue with different wording. If a car has an unknown history gap, that is ONE flag — not three flags about emissions testing, ownership gap, and mileage authenticity separately. Combine related concerns into the single most accurate flag. Prefer fewer, sharper flags over a padded list.
+- FLAG CONSOLIDATION: Each red flag must represent a DISTINCT, DIFFERENT concern. Before writing each flag, ask yourself: "Have I already flagged this?" Service history gap, emissions test age, ownership gap, and mileage unverifiability are ALL THE SAME CONCERN — write it ONCE as "No documented service or ownership history for X years — storage, maintenance, and mileage authenticity unverifiable." Do not repeat the same issue with different angles. If you catch yourself writing two flags that are about the same root cause, delete one.
+- DEALER LISTINGS: A dealer acquiring a car to sell it is normal business. Do NOT flag: dealer's short ownership window, recent acquisition date, lack of dealer-owned service history, or any variation of "dealer acquired this car recently." These are not concerns. Dealers buy and sell cars — that is their job.
 - READ THE LISTING: Before writing any flag, check whether the listing already addresses the concern. If the description explicitly documents something (e.g. a build sheet, specification plaque, service records, belt service), do NOT flag it as missing. Only flag absent documentation that is genuinely absent.
 - SPECIAL PROGRAM DOCS: If the listing mentions a personalization specifications plaque, Tailor Made plaque, factory color plaque, Classiche red book, CoA, window sticker, or any factory documentation — that IS the documentation. Do NOT flag it as missing or unconfirmed. Do NOT flag that commenters are asking for the window sticker as evidence of missing docs — buyers always ask; it doesn't mean it's absent.
 - LOW MILEAGE ON COLLECTIBLES: Very low mileage on a collector car or restomod is NORMAL. Do NOT speculate about why the owner is selling or question their motives. If under ~1,000 miles, a watchOut about verifying fluids/service is appropriate — nothing else.
@@ -152,6 +153,13 @@ const BANNED_FLAG_PATTERNS = [
   /quick(ly)? (resell|flip|list|sell)/i,
   /no (customer|retail) retention/i,
   /raises questions about why/i,
+  /acquired.*by.*dealer.*(recently|2026|no|without)/i,
+  /dealer.*(acquired|purchased|bought).*(recently|2026|no service|no documentation)/i,
+  /no documentation of ownership/i,
+  /no.*service.*between \d{4} and/i,
+  /smog (certification|test|check).*(not|no|missing|absent|unavailable)/i,
+  /emissions (test|certification|check).*(not|no|missing|past|absent)/i,
+  /last (emissions|smog|registered|tested).*(ago|since|back|2006|2005|2004|2003|2002|2001|2000|199)/i,
 ];
 
 function filterFlags(flags: Flag[]): Flag[] {
