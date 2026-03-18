@@ -244,10 +244,9 @@ export async function POST(request: Request) {
   // ── Step 1: Fetch market comps + run structured scoring in parallel ──
   // Use model page URL extracted directly from listing HTML — more reliable than title parsing
   const modelPageUrl = listing.modelPageUrl ?? buildModelPageUrl(listing.title);
-  // Model knowledge disabled for now — re-enable when knowledge base is expanded
-  // const yearMatch = listing.title.match(/\b(19|20)\d{2}\b/);
-  // const listingYear = yearMatch ? parseInt(yearMatch[0]) : null;
-  const modelKnowledge = null; // getModelKnowledge(listing.title, listingYear);
+  const yearMatch = listing.title.match(/\b(19|20)\d{2}\b/);
+  const listingYear = yearMatch ? parseInt(yearMatch[0]) : null;
+  const modelKnowledge = getModelKnowledge(listing.title, listingYear);
 
   const [comps, sellerProfile, prelimBreakdown] = await Promise.all([
     modelPageUrl ? fetchMarketComps(modelPageUrl) : Promise.resolve(null),
