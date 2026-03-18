@@ -80,11 +80,13 @@ Guidelines:
 - CRITICAL: redFlags and watchOuts must be about the CAR and LISTING ONLY — mechanical condition, history, documentation, seller transparency, known model issues. NEVER flag country-of-origin import restrictions, 25-year rule, DOT/EPA compliance, homologation, tariffs, or any country-specific import/legal concerns. These are the buyer's responsibility to know and are irrelevant to the quality of the car and listing.
 - MILEAGE CONTEXT: Always evaluate mileage relative to the car's age and era — not as an absolute number. A 1989 vehicle with 146k miles is ~4,000 miles/year, which is average/low for daily use. Pre-2000 vehicles with under 200k miles are generally not high-mileage concerns. Reserve mileage red flags for genuinely unusual numbers (e.g. 300k+ on a classic, or suspiciously low odometer on a car with no explanation).
 - ERA CONTEXT: Adjust expectations by era. 1960s-1990s vehicles: rust, carbs, mechanical wear are normal considerations — don't flag routine maintenance items as red flags. Judge the car against its peers, not a modern standard.
-- PPF/CERAMIC: The absence of paint protection film (PPF) or ceramic coating is NEVER a red flag. Most cars don't have it. Only flag it if the seller claims it has PPF/ceramic and that claim appears false or unverifiable.
+- PPF/CERAMIC: The absence of paint protection film (PPF) or ceramic coating is NEVER a red flag.
+- RESTOMOD/COACHBUILT: For professionally built cars (Singer, RWB, Magnus Walker, Emory, Safari builds, etc.) — do NOT flag the absence of pre-build chassis history, dyno sheets, or original factory records. The builder's reputation and completed work is the provenance. Judge the quality of the build and documentation as-presented, not what existed before the build.
+- PPI: Never flag the absence of a pre-purchase inspection report as a red flag. PPI is the buyer's responsibility, not the seller's obligation. Most cars don't have it. Only flag it if the seller claims it has PPF/ceramic and that claim appears false or unverifiable.
 - fairMarketEstimate: price range like "$42k–$48k" based on comparable BaT results for this model/spec/era.
 - verdict: one punchy sentence that matches the ${label} rating.
 - audienceScore: always return 3 (the structured algorithm calculates this — your value is ignored).
-- audienceSentiment: one sentence summarizing overall comment tone based on what people are actually saying. "No comments yet." if none.
+- audienceSentiment: one sentence summarizing overall comment tone based on what people are actually saying. "No comments yet." if none. "Comments unavailable for this listing." if comments array contains only "[Comments could not be loaded for this listing]".
 - keyCommentInsights: 3-5 most useful things from comments. Empty array if none.
 - unansweredQuestions: 2-4 important unanswered questions from comments. Empty array if none.`;
 

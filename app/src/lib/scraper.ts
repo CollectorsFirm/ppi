@@ -246,7 +246,11 @@ async function scrapeBaT(url: string): Promise<ListingData> {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
           "Referer": url,
+          "Origin": "https://bringatrailer.com",
+          "X-Requested-With": "XMLHttpRequest",
           "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+          "Accept": "application/json, text/javascript, */*; q=0.01",
+          "Accept-Language": "en-US,en;q=0.9",
         },
         body: `action=bat_theme_get_comments&post_id=${postId}&nonce=${nonce}&order=asc&page=1`,
         signal: AbortSignal.timeout(10000),
@@ -254,8 +258,10 @@ async function scrapeBaT(url: string): Promise<ListingData> {
 
       if (commentRes.ok) {
         type BaTComment = { content?: string; type?: string; bidAmount?: number; authorName?: string };
-        const data = await commentRes.json() as BaTComment[];
-        if (Array.isArray(data)) {
+        const rawText = await commentRes.text();
+        let data: BaTComment[] = [];
+        try { data = JSON.parse(rawText) as BaTComment[]; } catch { /* not JSON */ }
+        if (Array.isArray(data) && data.length > 0) {
           for (const c of data) {
             if (c.type === "comment" && c.content && c.content.length > 5) {
               // BaT appends " (The Seller)" to the seller's authorName — strip it before comparing
@@ -265,10 +271,17 @@ async function scrapeBaT(url: string): Promise<ListingData> {
             }
             if (comments.length >= 40) break;
           }
+        } else if (Array.isArray(data) && data.length === 0) {
+          // Empty array = no comments yet, that's fine
+        } else {
+          // AJAX returned something unexpected (auth failure, HTML, etc.)
+          comments.push("[Comments could not be loaded for this listing]");
         }
+      } else {
+        comments.push("[Comments could not be loaded for this listing]");
       }
     } catch {
-      // Comments unavailable — not fatal
+      comments.push("[Comments could not be loaded for this listing]");
     }
   }
 
