@@ -354,17 +354,35 @@ const VARIANT_PREMIUMS: Array<{ keywords: string[]; brands: string[]; pct: numbe
   { keywords: ["3.2 speedster", "carrera speedster", "911 speedster 1988", "911 speedster 1989"], brands: ["porsche"], pct: 1.80, label: "3.2 Carrera Speedster (+180% vs 3.2 coupe — 2,103 total built, $170-350k+ range)" },
 
   // ── PORSCHE 964 (1989–1994) — Baseline: C2 coupe ~$85k ────────────────────
-  { keywords: ["964 c4", "964 carrera 4", "c4 coupe"],                                   brands: ["porsche"], pct: -0.15, label: "964 Carrera 4 (−15% vs C2 — AWD is a liability to collectors, heavier, more complex)" },
-  { keywords: ["carrera 4 lightweight", "964 lightweight", "c4 lightweight"],             brands: ["porsche"], pct:  6.00, label: "964 Carrera 4 Lightweight (+600% — ~22 built, Classic.com $1.05M — flag for specialist appraisal)" },
-  { keywords: ["rs america", "carrera rs america", "964 rs america", "911 rs america"],   brands: ["porsche"], pct:  0.75, label: "964 RS America (+75% — 701 built, US-only lightweight, $100-200k+ range)" },
-  { keywords: ["964 carrera rs", "964 rs", "rs 3.6"],                                    brands: ["porsche"], pct:  1.80, label: "964 Carrera RS (+180% vs C2 — European spec, 260hp lightweight, avg ~$238k)" },
-  { keywords: ["964 speedster", "911 speedster 1993", "911 speedster 1994", "speedster 3.6"], brands: ["porsche"], pct: 1.15, label: "964 Speedster (+115% vs C2 — 936 built, $170-220k typical clean range)" },
-  { keywords: ["964 america roadster", "911 america roadster 3.6"],                       brands: ["porsche"], pct:  0.43, label: "964 America Roadster (+43% — 102 built, NA-only Turbo Look cab, avg ~$121k)" },
-  { keywords: ["964 turbo 3.6", "turbo 3.6", "3.6 turbo"],                               brands: ["porsche"], pct:  3.62, label: "964 Turbo 3.6 (+362% vs C2 — 360hp, Classic.com avg $392k, the collector-preferred 964 Turbo)" },
-  { keywords: ["964 turbo 3.3", "turbo 3.3", "3.3 turbo"],                               brands: ["porsche"], pct:  1.42, label: "964 Turbo 3.3 (+142% vs C2 — 930-derived engine, 320hp, Classic.com avg $206k)" },
-  { keywords: ["964 turbo s", "turbo s 964"],                                             brands: ["porsche"], pct:  5.50, label: "964 Turbo S (+550% vs C2 — ~85 built, 381hp, consistently $500k+ at auction)" },
-  { keywords: ["964 targa"],                                                               brands: ["porsche"], pct: -0.05, label: "964 Targa (−5% vs coupe — consistent with air-cooled Targa discount)" },
-  { keywords: ["964 cabriolet", "964 cab"],                                               brands: ["porsche"], pct: -0.08, label: "964 Cabriolet (−8% vs coupe — open-top discount holds on air-cooled cars)" },
+  // ── PORSCHE 964 (1989–1994) — Baseline: C2 coupe ~$85k ────────────────────
+  { keywords: ["964 c4", "964 carrera 4", "c4 coupe"],                                     brands: ["porsche"], pct: -0.10, label: "964 Carrera 4 (−10% vs C2 — RWD purity preferred, AWD adds weight/complexity)" },
+  { keywords: ["carrera 4 lightweight", "964 lightweight", "c4 lightweight", "leichtbau"], brands: ["porsche"], pct:  6.00, label: "964 Carrera 4 Lightweight (+600% — ~22 built, $600k-$1M+ — flag for specialist appraisal)" },
+  { keywords: ["rs america", "carrera rs america", "964 rs america", "911 rs america"],    brands: ["porsche"], pct:  0.40, label: "964 RS America (+40% — 701 built, US-only lightweight, $120-150k typical)" },
+  { keywords: ["rs 3.8", "carrera rs 3.8", "3.8 rs"],                                     brands: ["porsche"], pct:  4.00, label: "964 Carrera RS 3.8 (+400% — ~55 built, homologation for RSR, $400-600k+ range)" },
+  { keywords: ["964 carrera rs", "964 rs", "rs 3.6", "rs sport", "rs lightweight"],       brands: ["porsche"], pct:  0.80, label: "964 Carrera RS 3.6 (+80% — ~1,955 built, track-focused lightweight)" },
+  { keywords: ["rs touring", "964 rs touring"],                                            brands: ["porsche"], pct:  0.60, label: "964 Carrera RS Touring (+60% — ~290 built, interior retained)" },
+  { keywords: ["964 speedster", "911 speedster 1993", "911 speedster 1994"],               brands: ["porsche"], pct:  0.70, label: "964 Speedster (+70% — ~930 US built, $150-200k typical clean range)" },
+  { keywords: ["964 america roadster", "911 america roadster 3.6"],                        brands: ["porsche"], pct:  3.00, label: "964 America Roadster (+300% — ~20 built, ultra-rare — flag for manual appraisal)" },
+  { keywords: ["964 turbo 3.6", "turbo 3.6"],                                              brands: ["porsche"], pct:  2.00, label: "964 Turbo 3.6 (+200% vs C2 — 360hp, rarest non-S 964 Turbo, $250-400k typical)" },
+  { keywords: ["964 turbo 3.3", "turbo 3.3"],                                              brands: ["porsche"], pct:  1.10, label: "964 Turbo 3.3 (+110% vs C2 — 320hp, $130-200k typical)" },
+  { keywords: ["turbo s 3.6", "964 turbo s 3.6"],                                          brands: ["porsche"], pct: 10.00, label: "964 Turbo S 3.6 (+1000% — ~16 built, Classic.com avg ~$1M — flag for specialist appraisal)" },
+  { keywords: ["964 turbo s", "turbo s 3.3", "turbo s leichtbau", "turbo s lightweight"], brands: ["porsche"], pct:  7.00, label: "964 Turbo S 3.3 Leichtbau (+700% — ~86 built, Classic.com low $770k, BaT record $1.27M)" },
+  { keywords: ["964 targa"],                                                                brands: ["porsche"], pct: -0.05, label: "964 Targa (−5%)" },
+  { keywords: ["964 cabriolet", "964 cab", "carrera 2 cabriolet", "c2 cabriolet"],         brands: ["porsche"], pct: -0.12, label: "964 Cabriolet C2 (−12%)" },
+  { keywords: ["carrera 4 cabriolet", "c4 cabriolet", "c4 cab"],                           brands: ["porsche"], pct: -0.20, label: "964 Cabriolet C4 (−20% — AWD + soft-top compound discount)" },
+
+  // ── PORSCHE 993 (1994–1998) — Baseline: C2 coupe ~$90k ────────────────────
+  { keywords: ["993 c4", "993 carrera 4"],                                                 brands: ["porsche"], pct: -0.05, label: "993 Carrera 4 (−5% vs C2 — AWD gap narrower than 964, more refined system)" },
+  { keywords: ["carrera s", "c2s", "993 s"],                                               brands: ["porsche"], pct:  1.50, label: "993 Carrera S wide body (+150% — RWD wide body, 1997+ MY, $200-300k range)" },
+  { keywords: ["carrera 4s", "c4s", "993 4s"],                                             brands: ["porsche"], pct:  1.10, label: "993 Carrera 4S wide body (+110% — AWD wide body, $150-250k typical)" },
+  { keywords: ["993 targa"],                                                                brands: ["porsche"], pct:  0.20, label: "993 Targa (+20% — unique retractable glass roof, positive premium vs coupe)" },
+  { keywords: ["993 cabriolet", "993 cab", "993 convertible"],                             brands: ["porsche"], pct: -0.08, label: "993 Cabriolet (−8%)" },
+  { keywords: ["993 c4 cabriolet", "carrera 4 cabriolet 993"],                             brands: ["porsche"], pct: -0.15, label: "993 Carrera 4 Cabriolet (−15% — AWD + cab compound)" },
+  { keywords: ["993 turbo"],                                                                brands: ["porsche"], pct:  1.30, label: "993 Turbo (+130% — twin-turbo AWD, 408hp, $175-280k typical)" },
+  { keywords: ["993 turbo s", "turbo s 993"],                                              brands: ["porsche"], pct:  5.00, label: "993 Turbo S (+500% — ~183 built, 450hp, Classic.com avg $556k)" },
+  { keywords: ["993 gt2", "gt2 993"],                                                       brands: ["porsche"], pct: 20.00, label: "993 GT2 (+2000% — ~57 street cars, $2.4M+ at RM — flag for specialist appraisal)" },
+  { keywords: ["993 rs clubsport", "carrera rs clubsport"],                                brands: ["porsche"], pct:  2.00, label: "993 Carrera RS Clubsport (+200% vs C2 — ~172 built, race-prepped)" },
+  { keywords: ["993 carrera rs", "993 rs"],                                                brands: ["porsche"], pct:  1.10, label: "993 Carrera RS (+110% — ~1,014 built EU spec, $200-350k typical)" },
 
   // ── PORSCHE 914 variants (Grant research, 2026-03-17) ─────────────────────
   { keywords: ["914/6", "914-6"],            brands: ["porsche"], pct: 0.80, label: "914/6 (+80% vs 914/4 — 3,300 built, flat-six)" },
@@ -658,17 +676,36 @@ export function estimateHammerPrice(
     }
   }
 
+  // ── 993 Targa override — positive premium, not the generic -5% Targa penalty ──
+  // The generic Targa rule fires first on "targa" keyword; override it for 993
+  if (/993/i.test(listingTitle) && /targa/i.test(haystack)) {
+    // Find and undo the generic Targa penalty if it was applied
+    const tIdx = factors.findIndex(f => f.includes("Targa") && f.includes("−5%") && !f.includes("993"));
+    if (tIdx !== -1) {
+      multiplier += 0.05; // reverse the generic penalty
+      factors.splice(tIdx, 1);
+      factors.push("993 Targa (+20% — unique retractable glass roof, commands premium over coupe)");
+      multiplier += 0.20;
+    }
+  }
+
+  // ── 993 1998 final year premium ──
+  if (/993/i.test(listingTitle) && /\b1998\b/.test(listingTitle)) {
+    multiplier += 0.12;
+    factors.push("1998 993 (+12% — final year of air-cooled production, documented premium across all variants)");
+  }
+
   // ── 964 Turbo year logic (3.3 vs 3.6 split) ──
   if (/\b964\b|911.*turbo/i.test(listingTitle) && /turbo/i.test(listingTitle)) {
     const t964Year = listingTitle.match(/\b(199[1-4])\b/);
     if (t964Year && !/3\.6|3\.3/i.test(haystack)) {
       const ty = parseInt(t964Year[1]);
       if (ty === 1991 || ty === 1992) {
-        multiplier += 1.42;
-        factors.push(`${ty} 964 Turbo 3.3 (+142% — 930-derived engine, 320hp)`);
+        multiplier += 1.10;
+        factors.push(`${ty} 964 Turbo 3.3 (+110% — 320hp, $130-200k typical)`);
       } else if (ty === 1993 || ty === 1994) {
-        multiplier += 3.62;
-        factors.push(`${ty} 964 Turbo 3.6 (+362% — new 3.6L engine, 360hp, most desirable 964 Turbo)`);
+        multiplier += 2.00;
+        factors.push(`${ty} 964 Turbo 3.6 (+200% — 360hp, rarest non-S 964 Turbo, $250-400k typical)`);
       }
     }
   }
