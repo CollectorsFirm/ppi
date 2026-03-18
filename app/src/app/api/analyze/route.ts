@@ -98,6 +98,7 @@ ABSOLUTE NEVER LIST — these topics must NEVER appear anywhere in redFlags or w
 ✗ Import restrictions, 25-year rule, DOT/EPA compliance, homologation, tariffs
 ✗ Photo count being low or limited
 ✗ Why the owner might be selling
+✗ Dealer acquired a car to sell it — that is the definition of a dealer. Never flag a dealer's short ownership window, immediate resale, or "why would they flip it" reasoning. Dealers buy cars to sell them.
 
 Before finalizing your response, check every redFlag and watchOut against this list. If any item touches one of these topics — even indirectly or with different wording — remove it and replace it with something genuinely relevant to the car's condition or documentation.
 - fairMarketEstimate: price range like "$42k–$48k" based on comparable BaT results for this model/spec/era. EXCEPTION: if this is a restomod/coachbuilt car (Singer, Gunther Werks, RWB, Emory, etc.), return exactly: "Not applicable — restomod build. Value is builder/spec-specific."
@@ -141,6 +142,14 @@ const BANNED_FLAG_PATTERNS = [
   /documentation.*(not|missing|absent|unconfirmed|unclear|uncertain).*(tailor made|special program|bespoke|personalization)/i,
   /uncertainty about.*(documentation|completeness|factory)/i,
   /suggesting uncertainty/i,
+  /short ownership/i,
+  /flip(ping)?.*dealer/i,
+  /dealer.*flip/i,
+  /why.*dealer.*(sell|selling|list|flip)/i,
+  /immediately (list|sell|flip|offer)/i,
+  /quick(ly)? (resell|flip|list|sell)/i,
+  /no (customer|retail) retention/i,
+  /raises questions about why/i,
 ];
 
 function filterFlags(flags: Flag[]): Flag[] {
