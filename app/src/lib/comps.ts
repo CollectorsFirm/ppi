@@ -314,12 +314,42 @@ const VARIANT_PREMIUMS: Array<{ keywords: string[]; brands: string[]; pct: numbe
   // Baseline: mid-run 930 Turbo
   { keywords: ["flachbau", "slant nose", "slantnose", "flat nose", "flatnose"], brands: ["porsche"], pct: 0.60, label: "930 Flatnose/Slantnose (+60% — Grant: factory M505/M506 option, HIGH)" },
 
-  // ── PORSCHE 356 variants (Grant research, 2026-03-17) ─────────────────────
-  // Baseline: 356 coupe
-  { keywords: ["speedster"],                 brands: ["porsche"], pct: 0.70, label: "356 Speedster (+70% vs coupe — Grant: most desirable body style, HIGH)" },
-  { keywords: ["356 cabriolet", "356 cab"],  brands: ["porsche"], pct: 0.25, label: "356 Cabriolet (+25% vs coupe — Grant: HIGH)" },
+  // ── PORSCHE 356 variants (Grant research, 2026-03-18 expanded) ─────────────
+  // Baseline: 356B coupe
+  { keywords: ["speedster"],                                                            brands: ["porsche"], pct:  0.70, label: "356 Speedster (+70% vs coupe — Grant: most desirable body style, HIGH)" },
+  { keywords: ["356 cabriolet", "356 cab"],                                             brands: ["porsche"], pct:  0.25, label: "356 Cabriolet (+25% vs coupe — Grant: HIGH)" },
   { keywords: ["carrera 2.0", "carrera gt", "type 547", "carrera engine", "356 carrera"], brands: ["porsche"], pct: 1.50, label: "356 Carrera engine (+150% — Grant: DOHC Type 547, stratospheric premium, HIGH)" },
-  { keywords: ["super 90", "super90"],       brands: ["porsche"], pct: 0.15, label: "356 Super 90 (+15% — Grant: MEDIUM)" },
+  { keywords: ["super 90", "super90"],                                                  brands: ["porsche"], pct:  0.15, label: "356 Super 90 (+15% — Grant: MEDIUM)" },
+  { keywords: ["pre-a", "pre a", "gmünd", "gmund"],                                    brands: ["porsche"], pct:  0.60, label: "356 Pre-A (+60% — Grant: earliest Porsches, extreme rarity, historical importance, MEDIUM)" },
+  { keywords: ["356a", "356 a"],                                                        brands: ["porsche"], pct:  0.10, label: "356A generation (+10% — Grant: curved windshield era, collectible sweet spot, MEDIUM)" },
+  { keywords: ["356c", "356 c", "356sc", "356 sc"],                                    brands: ["porsche"], pct: -0.05, label: "356C/SC (−5% — Grant: disc brakes, most refined but highest survival rate, MEDIUM)" },
+  { keywords: ["roadster", "convertible d", "convertible-d"],                           brands: ["porsche"], pct:  0.40, label: "356 Roadster/Convertible D (+40% — Grant: rarer than Cabriolet, ~1,300 built, sporty, MEDIUM)" },
+  { keywords: ["1600s", "1600 s", "super 75", "super75"],                              brands: ["porsche"], pct:  0.10, label: "356 1600S/Super 75 (+10% — Grant: 75hp twin-carb sport engine, MEDIUM)" },
+  { keywords: ["carrera 2", "carrera2", "2000gs", "2000 gs"],                          brands: ["porsche"], pct:  2.00, label: "356 Carrera 2/2000GS (+200% — Grant: 2.0L quad-cam C-series, <130 built, transcends normal 356 market, HIGH)" },
+
+  // ── PORSCHE 912 variants (Grant research, 2026-03-18) ──────────────────────
+  // NOTE: 912 comp pool is 912-specific; this discount only applies if accidentally matched to 911 comps
+  { keywords: ["912 targa"],                                                             brands: ["porsche"], pct:  0.05, label: "912 Targa (+5% vs 912 coupe — Grant: rarer, open-air appeal, MEDIUM)" },
+  { keywords: ["912/5", "912 five speed", "912 5-speed"],                               brands: ["porsche"], pct:  0.10, label: "912/5 five-speed (+10% — Grant: 1969 rare 5-speed variant, LOW)" },
+  { keywords: ["912e", "912 e"],                                                         brands: ["porsche"], pct: -0.15, label: "912E (−15% vs 912 — Grant: 1976 US-only stop-gap, 86hp, weakest in family, MEDIUM)" },
+
+  // ── PORSCHE Early 911 / F-series (1965–1973) (Grant research, 2026-03-18) ──
+  // Baseline: 911T
+  { keywords: ["911s", "911 s"],                                                         brands: ["porsche"], pct:  0.35, label: "Early 911S (+35% — Grant: top-spec F-series, 160-190hp, Fuchs alloys, 30-40% above T at auction, HIGH)" },
+  { keywords: ["911e", "911 e"],                                                         brands: ["porsche"], pct:  0.15, label: "Early 911E (+15% — Grant: mid-tier, Bosch MFI injection from 1969, HIGH)" },
+  { keywords: ["911l", "911 l", "911 luxe"],                                             brands: ["porsche"], pct:  0.10, label: "Early 911L/Luxe (+10% — Grant: US-only 1967-68, bridging trim, rarer than T, MEDIUM)" },
+  { keywords: ["swb", "short wheelbase", "short-wheelbase"],                             brands: ["porsche"], pct:  0.20, label: "Early 911 SWB (+20% — Grant: 1965-68, purist's 911, aesthetically the purest form, MEDIUM)" },
+  { keywords: ["rs 2.7 lightweight", "rs2.7 lightweight", "carrera rs lightweight", "rs lightweight"], brands: ["porsche"], pct: 1.60, label: "Carrera RS 2.7 Lightweight (+160% — Grant: M471, 75kg lighter, 200 built, $700k+ range at RM, apply INSTEAD of generic RS +80%, HIGH)" },
+  { keywords: ["rs 2.7 touring", "rs2.7 touring", "carrera rs touring", "rs touring"],  brands: ["porsche"], pct:  0.80, label: "Carrera RS 2.7 Touring (+80% — Grant: M472 option, confirms existing entry, HIGH)" },
+  { keywords: ["oil filler flap", "oil flap"],                                           brands: ["porsche"], pct:  0.08, label: "1972 911 oil-filler flap (+8% — Grant: outside filler in rear fender, quirky collector curiosity, LOW)" },
+  { keywords: ["carrera 2.7", "carrera2.7"],                                             brands: ["porsche"], pct:  0.20, label: "G-body Carrera 2.7 (+20% — Grant: 1974-77 ducktail 210hp, premium over base G-body, HIGH)" },
+
+  // ── PORSCHE G-body 911 (1974–1989) (Grant research, 2026-03-18) ────────────
+  // Baseline: 911 SC coupe
+  { keywords: ["3.2 carrera", "carrera 3.2"],                                            brands: ["porsche"], pct:  0.15, label: "3.2 Carrera (+15% over SC — Grant: 231hp, better driveability, MEDIUM)" },
+  { keywords: ["g50", "g50 gearbox", "g50 transmission"],                                brands: ["porsche"], pct:  0.12, label: "3.2 Carrera G50 gearbox (+12% — Grant: smoother shifts, Hagerty confirms $10k+ premium, 1987-89 only, HIGH)" },
+  { keywords: ["club sport", "clubsport", "m637"],                                       brands: ["porsche"], pct:  0.90, label: "3.2 Carrera Club Sport (+90% — Grant: M637 option, ~340 built, BaT Aug 2024 $310k, HIGH)" },
+  { keywords: ["turbo look", "turbo-look"],                                              brands: ["porsche"], pct:  0.25, label: "Turbo Look (+25% — Grant: wide body on non-turbo, factory option, always attracts premium, HIGH)" },
 
   // ── PORSCHE 914 variants (Grant research, 2026-03-17) ─────────────────────
   { keywords: ["914/6", "914-6"],            brands: ["porsche"], pct: 0.80, label: "914/6 (+80% vs 914/4 — Grant: 3,300 built, flat-six, HIGH)" },
@@ -580,6 +610,35 @@ export function estimateHammerPrice(
   if (/190e/i.test(listingTitle) && /(cosworth|2\.3.16|2\.5.16)/i.test(haystack)) {
     multiplier += 0.40;
     factors.push("190E Cosworth (+40% vs base 190E — Grant: HIGH)");
+  }
+
+  // ── Early 911 Sportomatic transmission penalty (Grant: HIGH confidence) ──
+  if (/\b911\b/i.test(listingTitle) && /sportomatic/i.test(haystack)) {
+    multiplier -= 0.25;
+    factors.push("Sportomatic transmission (−25% — Grant: period oddity, major collector discount, most convert to manual, HIGH)");
+  }
+
+  // ── Early 911 year premiums (SWB era / last long-hood) ──
+  if (/\b911\b/i.test(listingTitle) || /early.*911|long.?hood/i.test(haystack)) {
+    const yearMatch911 = listingTitle.match(/\b(196[5-9]|197[0-3])\b/);
+    const y = yearMatch911 ? parseInt(yearMatch911[1]) : null;
+    if (y === 1965 || y === 1966) {
+      multiplier += 0.30;
+      factors.push(`${y} 911 earliest production (+30% — Grant: 300-series SWB, foundational rarity, HIGH)`);
+    } else if (y === 1973) {
+      multiplier += 0.15;
+      factors.push("1973 911 last pre-impact bumper (+15% — Grant: 2.4L at peak, 'last pure' long-hood premium, HIGH)");
+    }
+  }
+
+  // ── G-body 911 SC vs 3.2 Carrera year premium (G50 gearbox era 1987-89) ──
+  // Already handled in VARIANT_PREMIUMS (G50 keyword), but catch year-only cases
+  if (/\b911\b/i.test(listingTitle) && /carrera/i.test(listingTitle)) {
+    const gYearMatch = listingTitle.match(/\b(198[7-9])\b/);
+    if (gYearMatch && !/g50|g50\b/i.test(haystack)) {
+      multiplier += 0.08;
+      factors.push(`${gYearMatch[1]} 3.2 Carrera (+8% — Grant: late G-body, likely G50 era, desirable, MEDIUM)`);
+    }
   }
 
   // ── Dealer vs private ──
