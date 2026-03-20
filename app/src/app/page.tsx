@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect, useRef } from "react";
+import { useMemo, useState, useEffect } from "react";
 
 const steps = [
   "Scraping listing data",
@@ -101,64 +101,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<ApiResponse | null>(null);
 
-  // Ask PPI chat state
-  type ChatMsg = { role: "user" | "assistant"; content: string };
-  const [chatOpen, setChatOpen] = useState(false);
-  const [chatHistory, setChatHistory] = useState<ChatMsg[]>([]);
-  const [chatInput, setChatInput] = useState("");
-  const [chatLoading, setChatLoading] = useState(false);
-  const chatBottomRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (chatOpen) chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [chatHistory, chatOpen]);
-
-  // Reset chat when a new listing is loaded
-  useEffect(() => {
-    setChatHistory([]);
-    setChatOpen(false);
-  }, [data]);
-
-  const handleChatSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const msg = chatInput.trim();
-    if (!msg || chatLoading) return;
-    setChatInput("");
-    const newHistory: ChatMsg[] = [...chatHistory, { role: "user", content: msg }];
-    setChatHistory(newHistory);
-    setChatLoading(true);
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: msg,
-          history: chatHistory,
-          listingContext: data ? {
-            title: data.listing.title,
-            price: data.listing.price,
-            description: data.listing.description?.slice(0, 1500),
-            specs: data.listing.specs,
-            score: data.report.score,
-            label: data.report.label,
-            verdict: data.report.verdict,
-            greenFlags: data.report.greenFlags,
-            redFlags: data.report.redFlags,
-            watchOuts: data.report.watchOuts,
-            fairMarketEstimate: data.report.fairMarketEstimate,
-            hammerEstimate: data.report.hammerEstimate,
-            modelKnowledge: data.report.modelKnowledge,
-          } : null,
-        }),
-      });
-      const payload = await res.json();
-      setChatHistory([...newHistory, { role: "assistant", content: payload.reply || "Sorry, something went wrong." }]);
-    } catch {
-      setChatHistory([...newHistory, { role: "assistant", content: "Something went wrong. Try again." }]);
-    } finally {
-      setChatLoading(false);
-    }
-  };
 
   useEffect(() => {
     if (!loading) {
@@ -649,90 +592,7 @@ export default function Home() {
 
 
 
-            {/* ── Ask PPI Chat ── */}
-            <div className={`rounded-2xl border overflow-hidden ${dark ? "border-white/10 bg-white/5" : "border-black/10 bg-white shadow-sm"}`}>
-              {/* Header / Toggle */}
-              <button
-                onClick={() => setChatOpen(o => !o)}
-                className={`w-full flex items-center gap-3 px-6 py-4 text-left transition-colors ${dark ? "hover:bg-white/5" : "hover:bg-[#F9F6F1]"}`}
-              >
-                {/* PPI character */}
-                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-lg font-black shadow-sm ${dark ? "bg-[#E8A020] text-black" : "bg-[#C0392B] text-white"}`}>
-                  P
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className={`text-sm font-semibold ${dark ? "text-white" : "text-[#1A1A1A]"}`}>Ask PPI</p>
-                  <p className={`text-xs truncate ${dark ? "text-white/40" : "text-[#8A847C]"}`}>
-                    Questions about this listing, the car, or BaT — I'm here
-                  </p>
-                </div>
-                <span className={`text-xs transition-transform duration-200 ${chatOpen ? "rotate-180" : ""} ${dark ? "text-white/40" : "text-[#8A847C]"}`}>▼</span>
-              </button>
 
-              {chatOpen && (
-                <div className={`border-t ${dark ? "border-white/10" : "border-black/10"}`}>
-                  {/* Message list */}
-                  <div className="flex flex-col gap-3 max-h-96 overflow-y-auto px-6 py-4">
-                    {chatHistory.length === 0 && (
-                      <div className="flex gap-3 items-start">
-                        <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-black ${dark ? "bg-[#E8A020] text-black" : "bg-[#C0392B] text-white"}`}>P</div>
-                        <div className={`rounded-2xl rounded-tl-sm px-4 py-2.5 text-sm max-w-[80%] ${dark ? "bg-white/10 text-white/80" : "bg-[#F3EDE5] text-[#1A1A1A]"}`}>
-                          Hey! I've read the full report on this listing. Ask me anything about the car, the auction, known issues, or whether this is worth bidding on.
-                        </div>
-                      </div>
-                    )}
-                    {chatHistory.map((msg, i) => (
-                      <div key={i} className={`flex gap-3 items-start ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
-                        {msg.role === "assistant" && (
-                          <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-black ${dark ? "bg-[#E8A020] text-black" : "bg-[#C0392B] text-white"}`}>P</div>
-                        )}
-                        <div className={`rounded-2xl px-4 py-2.5 text-sm max-w-[80%] leading-relaxed ${
-                          msg.role === "user"
-                            ? dark ? "bg-white/15 text-white rounded-tr-sm" : "bg-[#1A1A1A] text-white rounded-tr-sm"
-                            : dark ? "bg-white/10 text-white/80 rounded-tl-sm" : "bg-[#F3EDE5] text-[#1A1A1A] rounded-tl-sm"
-                        }`}>
-                          {msg.content}
-                        </div>
-                      </div>
-                    ))}
-                    {chatLoading && (
-                      <div className="flex gap-3 items-start">
-                        <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-black ${dark ? "bg-[#E8A020] text-black" : "bg-[#C0392B] text-white"}`}>P</div>
-                        <div className={`rounded-2xl rounded-tl-sm px-4 py-2.5 text-sm ${dark ? "bg-white/10 text-white/40" : "bg-[#F3EDE5] text-[#8A847C]"}`}>
-                          <span className="inline-flex gap-1">
-                            <span className="animate-bounce" style={{ animationDelay: "0ms" }}>•</span>
-                            <span className="animate-bounce" style={{ animationDelay: "150ms" }}>•</span>
-                            <span className="animate-bounce" style={{ animationDelay: "300ms" }}>•</span>
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                    <div ref={chatBottomRef} />
-                  </div>
-
-                  {/* Input */}
-                  <form onSubmit={handleChatSubmit} className={`flex gap-2 border-t px-4 py-3 ${dark ? "border-white/10" : "border-black/10"}`}>
-                    <input
-                      value={chatInput}
-                      onChange={e => setChatInput(e.target.value)}
-                      placeholder="Ask about this listing, the car, or BaT…"
-                      disabled={chatLoading}
-                      className={`flex-1 rounded-xl border px-3 py-2 text-sm outline-none ring-2 ring-transparent transition focus:ring-[#C0392B]/30 disabled:opacity-50 ${dark ? "border-white/10 bg-black/40 text-white placeholder:text-white/30 focus:ring-[#E8A020]/30" : "border-black/10 bg-[#F9F6F1] text-[#1A1A1A] placeholder:text-[#8A847C]"}`}
-                    />
-                    <button
-                      type="submit"
-                      disabled={!chatInput.trim() || chatLoading}
-                      className={`rounded-xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed ${dark ? "bg-[#E8A020] text-black hover:bg-[#D18F1B] disabled:bg-white/10 disabled:text-white/30" : "bg-[#C0392B] text-white hover:bg-[#A93226] disabled:bg-black/10 disabled:text-black/40"}`}
-                    >
-                      Send
-                    </button>
-                  </form>
-                  <p className={`px-4 pb-3 text-xs ${dark ? "text-white/25" : "text-[#B0A89E]"}`}>
-                    Only discusses this listing, the car model, and BaT. Not financial advice.
-                  </p>
-                </div>
-              )}
-            </div>
 
           </section>
         )}
