@@ -1,3 +1,9 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
+
 export default function PrivacyPage() {
   return (
     <main className="min-h-screen bg-[#F5F2ED] px-6 py-16 font-serif">
