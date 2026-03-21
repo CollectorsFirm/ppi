@@ -8,7 +8,7 @@ export default function PrivacyPage() {
         <section className="mb-8">
           <h2 className="text-lg font-semibold text-[#1A1A1A] mb-3">Overview</h2>
           <p className="text-[#3A3A3A] leading-relaxed">
-            PPI (Pre-Purchase Intelligence) is a personal tool built by Truman Wilson for analyzing Bring a Trailer
+            PPI (Pre-Purchase Intelligence) is a personal tool for analyzing Bring a Trailer
             listings. This privacy policy describes how data is handled when you use this application.
           </p>
         </section>
@@ -58,8 +58,8 @@ export default function PrivacyPage() {
           <h2 className="text-lg font-semibold text-[#1A1A1A] mb-3">Contact</h2>
           <p className="text-[#3A3A3A] leading-relaxed">
             Questions about this privacy policy? Reach out to{" "}
-            <a href="mailto:trumanwilson@me.com" className="text-[#C0392B] hover:underline">
-              trumanwilson@me.com
+            <a href="mailto:mizwa@collectorsfirm.com" className="text-[#C0392B] hover:underline">
+              mizwa@collectorsfirm.com
             </a>
             .
           </p>
